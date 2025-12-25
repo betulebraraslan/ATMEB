@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+  <!-- Verknüpfung zur externen CSS-Datei -->
+<link rel="stylesheet" href="style.css"> 
+
+<head>
+<!-- Titel der Seite (Tab-Name im Browser) -->
+    <title>Anmeldung</title> 
+</head>
+<body>
+
+<h2>Anmeldung</h2>
+
+<form id="loginForm">
+    <!-- Beschriftung für das Eingabefeld -->
+    <label>Benutzername oder E-Mail</label><br>
+    
+    <input type="text" id="username" required><br><br>
+
+    <label>Passwort</label><br>
+    <input type="password" id="password" required><br><br>
+
+    <!-- Anmelden-Button -->
+    <button type="submit">Anmelden</button>
+</form>
+
+<script>
+    // JavaScript wartet auf das Absenden des Formulars
+    document.getElementById("loginForm").addEventListener("submit", function (event) {
+    // Verhindert das Neuladen der Seite, damit man zur Uebersicht weitergeleitet wird 
+    event.preventDefault();
+    // Holt den Benutzernamen und entfernt Leerzeichen
+    const username = document.getElementById("username").value.trim();
+
+    // Holt das Passwort und entfernt Leerzeichen
+    const password = document.getElementById("password").value.trim();
+
+   
+    // Benutzername speichern
+    localStorage.setItem("username", username);
+
+    // Weiterleitung
+    window.location.href = "uebersicht.html";
+});
+</script>
+
+</body>
+</html>
