@@ -1,11 +1,13 @@
-
 body {
     font-family: Arial, sans-serif;
     background-color: #f2f2f2;
+
 }
 
+
+
 .container {
-    width: 300px; 
+    width: 300px;
     margin: 100px auto;
     padding: 20px;
     background-color: white;
@@ -13,14 +15,20 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+
+
 h2 {
     text-align: center;
 }
+
+
 
 label {
     display: block;
     margin-top: 10px;
 }
+
+
 
 input {
     width: 100%;
@@ -29,11 +37,13 @@ input {
     box-sizing: border-box;
 }
 
+
+
 button {
     width: 100%;
     margin-top: 15px;
     padding: 16px;
-    font-size: 18px; 
+    font-size: 18px;
     background-color: #4CAF50;
     color: black(253, 0, 42);
     border: none;
@@ -41,6 +51,144 @@ button {
     cursor: pointer;
 }
 
+
+
 button:hover {
+
     background-color: #45a049;
+
+}
+
+
+
+/* --- Übersicht Sayfası Eklemeleri --- */
+
+
+
+/* Navigasyon Çubuğu */
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    color: white;
+    padding: 15px 30px;
+
+}
+
+
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 60px;
+}
+
+.group-logo {
+    font-weight: bold;
+    font-size: 24px;
+    color: #ffffff; /* Yeşil logo rengi */
+    letter-spacing: 1px;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 30px; /* Menü, Kurse, Evaluationen arasındaki boşluk */
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+/* Üzerine gelince renk değişimi ve punto büyümesi */
+
+.nav-link:hover {
+    color: #4CAF50;
+    font-size: 1.1em;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.profile-circle {
+    width: 35px;
+    height: 35px;
+    background-color: #ccc;
+    border-radius: 50%;
+}
+
+
+/* Sayfa İçeriği */
+
+.content-wrapper {
+    padding: 40px;
+}
+
+
+.main-title {
+    font-size: 36px;
+    margin-bottom: 30px;
+}
+
+
+.course-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+
+.add-btn {
+    width: auto; /* Login butonundan farklı olarak genişliği otomatik yapıyoruz */
+    padding: 10px 20px;
+}
+
+/* Kurs Kutuları */
+
+.courses-grid {
+    margin-top: 20px;
+}
+
+
+
+.course-box {
+    background-color: white;
+    padding: 50px 30px;
+    margin-bottom: 20px;
+    border-radius: 20px; /* Yuvarlanmış köşeler */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+
+
+
+.course-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+
+/* Kurs kutusunun üzerine gelince renk değişimi */
+
+.course-box:hover {
+    background-color: #e8f5e9; /* Çok açık yeşil bir ton */
+    transform: translateY(-5px); /* Hafif yukarı kayma efekti (zaten eklemiştik) */
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    transition: background-color 0.3s ease; /* Renk geçişinin yumuşak olması için */
+}
+
+
+
+/* Eğer içindeki yazıların rengini de değiştirmek istersen bunu da ekleyebilirsin */
+
+.course-box:hover h3 {
+    color: #2e7d32; /* Yazıyı biraz daha koyu yeşil yapar */
 }

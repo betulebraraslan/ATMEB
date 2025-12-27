@@ -1,17 +1,57 @@
 <!DOCTYPE html>
-
+<html lang="de">
 <head>
-    
+    <meta charset="UTF-8">
     <title>Übersicht</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h2 id="text"></h2>
+<nav class="navbar">
+    <div class="nav-left">
+        <span class="group-logo">ATMEB</span>
+        
+        <div class="nav-links">
+            <span class="burger-logo">☰</span>
+            <a href="#" class="nav-link">Menü</a>
+            <a href="#" class="nav-link">Kurse</a>
+            <a href="#" class="nav-link">Evaluationen</a>
+            <a href="#" class="nav-link">Einstellungen</a>
+        </div>
+    </div>
+
+    <div class="nav-right">
+        <span id="user-display"></span>
+        <div class="profile-circle"></div>
+    </div>
+</nav>
+
+<div class="content-wrapper">
+    <h1 class="main-title">Übersicht</h1>
+
+    <div class="course-header">
+        <h2>Übersicht von Kursen</h2>
+        <button class="add-btn" onclick="window.location.href='neu_kurs.html'">neue Kurse hinzufügen</button>
+    </div>
+
+    <div class="courses-grid">
+        <div class="course-box">
+            <h3>Mensch Computer Interaktion</h3>
+        </div>
+        <div class="course-box">
+            <h3>Programmieren I</h3>
+        </div>
+    </div>
+</div>
 
 <script>
- 
-    document.getElementById("text").innerText = "Hallo!";
+    /* Abrufen des Benutzernamens aus dem LocalStorage, 
+       der auf der Login-Seite gespeichert wurde.
+    */
+    const storedUser = localStorage.getItem("username");
     
+    // Falls ein Name vorhanden ist, wird dieser angezeigt, ansonsten "Gast"
+    document.getElementById("user-display").innerText = storedUser ? storedUser : "Gast";
 </script>
 
 </body>
