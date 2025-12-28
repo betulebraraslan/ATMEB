@@ -2,13 +2,140 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Kurs hinzufügen</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Neu Kurs</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Top bar */
+        .top-bar {
+            padding: 20px;
+        }
+
+        .top-bar button {
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            color: #2c3e50;
+        }
+
+        /* Card */
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            margin-bottom: 30px;
+        }
+
+        /* Form rows */
+        .form-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .form-row label {
+            width: 180px;
+            font-weight: bold;
+        }
+
+        .form-row input {
+            flex: 1;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        /* Actions */
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 40px;
+        }
+
+        .actions button {
+            background-color: #6fb35f;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .actions button:hover {
+            background-color: #6fb35f;
+        }
+        .actions button:disabled {
+           background-color: #bfcfb8;
+           cursor: not-allowed;
+        }
+    </style>
 </head>
 <body>
-    <h1>Kurs hinzufügen</h1>
-    <p>hey.</p>
+
+
+    <div class="top-bar">
+        <button onclick="window.location.href='uebersicht.html'">
+            ← Zur Übersicht
+        </button>
+    </div>
+
+  
+    <div class="container">
+        <h2>Neuen Kurs hinzufügen</h2>
+
+        <div class="form-row">
+            <label for="kursname">Name des Kurses</label>
+            <input id="kursname" type="text" placeholder=" z. B. Mensch-Computer Interaktion">
+        </div>
+
+        <div class="form-row">
+            <label for="semester">Semester</label>
+            <input id="semester" type="text" placeholder=" z. B. WS 2025">
+        </div>
+
+        <div class="actions">
+            <button id="submitBtn" onclick="confirmAdd()" disabled>
+                Bestätigen
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const kursnameInput = document.getElementById("kursname");
+        const semesterInput = document.getElementById("semester");
+        const submitBtn = document.getElementById("submitBtn");
     
-    <button onclick="window.location.href='uebersicht.html'">Zurück zur Übersicht</button>
+        function checkInputs() {
+            if (
+                kursnameInput.value.trim() !== "" &&
+                semesterInput.value.trim() !== ""
+            ) {
+                submitBtn.disabled = false;
+            } else {
+                submitBtn.disabled = true;
+            }
+        }
+    
+        kursnameInput.addEventListener("input", checkInputs);
+        semesterInput.addEventListener("input", checkInputs);
+    
+        function confirmAdd() {
+            window.location.href = "evaluation_hinzufuegen.html";
+        }
+    </script>
+
 </body>
 </html>
