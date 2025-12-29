@@ -37,22 +37,41 @@
     <div class="courses-grid">
         <div class="course-box" onclick="window.location.href='mci.html'">
             <h3>Mensch Computer Interaktion</h3>
+            <small>WS 2025</small> </div>
         </div>
 
         <div class="course-box" onclick="window.location.href='prog.html'">
             <h3>Programmieren I</h3>
+            <small>WS 2025</small> </div>
         </div>
     </div>
 </div>
 
 <script>
-    /* Abrufen des Benutzernamens aus dem LocalStorage, 
-       der auf der Login-Seite gespeichert wurde.
-    */
+    // Kullanıcı adını göster
     const storedUser = localStorage.getItem("username");
-    
-    // Falls ein Name vorhanden ist, wird dieser angezeigt, ansonsten "Gast"
     document.getElementById("user-display").innerText = storedUser ? storedUser : "Gast";
+
+    
+    const coursesGrid = document.querySelector(".courses-grid");
+    const ekstraKurs = JSON.parse(localStorage.getItem("ekstraKurs")) || [];
+
+    ekstraKurs.forEach(kurs => {
+       
+        const newBox = document.createElement("div");
+        newBox.className = "course-box"; 
+      
+       
+        newBox.innerHTML = `<h3>${kurs.name}</h3><small>${kurs.sem}</small>`;
+        
+        
+        newBox.onclick = function() {
+            window.location.href = "newkurs.html"; 
+        };
+
+        
+        coursesGrid.appendChild(newBox);
+    });
 </script>
 
 </body>

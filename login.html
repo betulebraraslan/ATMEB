@@ -27,6 +27,7 @@
     // JavaScript wartet auf das Absenden des Formulars
     document.getElementById("loginForm").addEventListener("submit", function (event) {
     // Verhindert das Neuladen der Seite, damit man zur Uebersicht weitergeleitet wird 
+    localStorage.removeItem("ekstraKurs");
     event.preventDefault();
     // Holt den Benutzernamen und entfernt Leerzeichen
     const username = document.getElementById("username").value.trim();
