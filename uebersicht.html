@@ -35,12 +35,12 @@
     </div>
 
     <div class="courses-grid">
-        <div class="course-box" onclick="window.location.href='mci.html'">
+        <div class="course-box" onclick="window.location.href='neue_evaluation.html'">
             <h3>Mensch Computer Interaktion</h3>
             <small>WS 2025</small> </div>
         </div>
 
-        <div class="course-box" onclick="window.location.href='prog.html'">
+        <div class="course-box" onclick="window.location.href='neue_evaluation.html'">
             <h3>Programmieren I</h3>
             <small>WS 2025</small> </div>
         </div>
@@ -65,9 +65,12 @@
         newBox.innerHTML = `<h3>${kurs.name}</h3><small>${kurs.sem}</small>`;
         
         
-        newBox.onclick = function() {
-            window.location.href = "newkurs.html"; 
-        };
+        newBox.onclick = function () {
+    localStorage.setItem("selectedCourse", kurs.name);
+    window.location.href = "evaluationen.html"; //
+};
+
+
 
         
         coursesGrid.appendChild(newBox);

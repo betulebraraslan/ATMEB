@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Evaluationen</title>
+<style>
+body {
+    font-family: Arial;
+    background: #f4f6f8;
+}
+.container {
+    max-width: 700px;
+    margin: 40px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+}
+.eval-box {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+}
+button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: #6fb35f;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2 id="courseTitle"></h2>
+    <div id="evaluationList"></div>
+
+    <button onclick="goToCreate()">Neue Evaluation erstellen</button>
+</div>
+
+<script>
+const course = localStorage.getItem("selectedCourse");
+;
+document.getElementById("courseTitle").innerText =
+    "Evaluationen für: " + course;
+
+const evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
+const list = document.getElementById("evaluationList");
+
+const filtered = evaluations.filter(e => e.course === course);
+
+if (filtered.length === 0) {
+    list.innerHTML = "<p>Noch keine Evaluationen vorhanden.</p>";
+} else {
+    filtered.forEach(ev => {
+        const div = document.createElement("div");
+        div.className = "eval-box";
+        div.innerText = ev.question;
+        list.appendChild(div);
+    });
+}
+
+function goToCreate() {
+    window.location.href = "neue_evaluation.html";
+}
+</script>
+
+</body>
+</html>
