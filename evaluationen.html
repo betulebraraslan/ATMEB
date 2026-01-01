@@ -16,7 +16,7 @@
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
             <h1 class="main-title" id="courseHeader" style="margin: 0;">Evaluationen</h1>
 
-            <button class="add-btn" onclick="window.location.href='neue_evaluation.html'">
+            <button class="add-btn" onclick="goToNeueEvaluation()">
                 Neue Evaluation erstellen
             </button>
         </div>
@@ -27,31 +27,96 @@
 </div>
 
 <script>
-   
-    const selectedCourse = localStorage.getItem("selectedCourse") || "Kurs";
-    
-    
-    document.getElementById("courseHeader").innerText = "Evaluationen für: " + selectedCourse;
+const selectedCourse = localStorage.getItem("selectedCourse") || "Kurs";
+document.getElementById("courseHeader").innerText =
+    "Evaluationen für: " + selectedCourse;
 
-    const evalGrid = document.getElementById("evalGrid");
+const evalGrid = document.getElementById("evalGrid");
 
-  
-    for (let i = 1; i <= 3; i++) {
-        const evalBox = document.createElement("div");
-        evalBox.className = "course-box";
-        evalBox.onclick = function() {
-            window.location.href = 'evaluation_inhalt.html';
-        };
+// ===== 1. Load alle Evaluationen =====
+let evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
 
-  
-        evalBox.innerHTML = `
-            <h3>${selectedCourse}</h3>
-            <small>${i}. Woche</small>
-        `;
+// ===== 2. Woche 1–3 automatisch erzeugen (nur 1x) =====
+for (let i = 1; i <= 3; i++) {
+    const title = `${selectedCourse} – Woche ${i}`;
 
-        evalGrid.appendChild(evalBox);
+    const exists = evaluations.find(ev =>
+        ev.course === selectedCourse &&
+        ev.title === title
+    );
+
+    if (!exists) {
+        evaluations.push({
+            id: Date.now() + i,
+            course: selectedCourse,
+            title: title,
+            questions: [],
+            origin: "evaluationen"
+        });
     }
+}
+
+// speichern (falls neue Woche erzeugt wurde)
+localStorage.setItem("evaluations", JSON.stringify(evaluations));
+
+// ===== 3. Nur Evaluationen dieses Kurses anzeigen =====
+const courseEvaluations = evaluations.filter(ev =>
+    ev.course === selectedCourse &&
+    ev.origin === "evaluationen"
+);
+
+// ===== 4. Render =====
+evalGrid.innerHTML = "";
+
+courseEvaluations.forEach(ev => {
+    const box = document.createElement("div");
+    box.className = "course-box";
+
+    box.innerHTML = `
+        <h3>${ev.title}</h3>
+        <small>${ev.questions.length} Fragen</small>
+
+        <div style="margin-top:10px; display:flex; gap:10px;">
+            <button class="add-btn"
+                onclick="editEvaluation(${ev.id}); event.stopPropagation();">
+                ✏️ Bearbeiten
+            </button>
+
+            <button class="add-btn"
+                onclick="deleteEvaluation(${ev.id}); event.stopPropagation();">
+                🗑️ Löschen
+            </button>
+        </div>
+    `;
+
+    box.onclick = () => editEvaluation(ev.id);
+    evalGrid.appendChild(box);
+});
+
+// ===== Funktionen =====
+function editEvaluation(id) {
+    localStorage.setItem("currentEvaluationId", id);
+    localStorage.setItem("evaluationSource", "evaluationen");
+    window.location.href = "evaluation_detail.html";
+}
+
+function deleteEvaluation(id) {
+    if (!confirm("Möchten Sie diese Evaluation wirklich löschen?")) return;
+
+    let evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
+    evaluations = evaluations.filter(e => e.id !== id);
+
+    localStorage.setItem("evaluations", JSON.stringify(evaluations));
+    location.reload();
+}
+
+function goToNeueEvaluation() {
+    localStorage.removeItem("currentEvaluationId");
+    localStorage.setItem("evaluationSource", "evaluationen");
+    window.location.href = "neue_evaluation.html";
+}
 </script>
+
 
 </body>
 </html>
