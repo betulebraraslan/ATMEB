@@ -32,7 +32,10 @@
 <div class="content-wrapper">
     <h1 class="main-title">Evaluation Details</h1>
     <label>Evaluation Titel</label><br>
-        <input type="text" id="evalTitle" placeholder="z.B. Midterm Feedback">
+        <div style="display:flex; gap:8px; align-items:center;">
+    <span id="coursePrefix" style="font-weight:600;"></span>
+    <input type="text" id="evalTitle" placeholder="z.B. Woche 4">
+</div>
     <br><br>
     
     <ul id="questionList"></ul>
@@ -49,19 +52,20 @@
 </div>
 
 <script>
+    //const course = localStorage.getItem("selectedCourse") || "";
+//document.getElementById("coursePrefix").innerText = course + " – ";
     const evaluationId = Number(localStorage.getItem("currentEvaluationId"));
-    let evaluation = null;
+const evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
 
-    let evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
+const evaluation = evaluations.find(e => e.id === evaluationId);
 
-    if (!isNaN(evaluationId)) {
-        evaluation = evaluations.find(e => e.id === evaluationId);
-    }
+if (!evaluation) {
+    alert("Evaluation konnte nicht geladen werden");
+    window.location.href = "evaluationen.html";
+    throw new Error("Evaluation not found");
+}
 
-    
-    if (!evaluation) {
-        evaluation = JSON.parse(localStorage.getItem("draftEvaluation"));
-    }
+
 
     if (evaluation && evaluation.title) {
         document.getElementById("evalTitle").value = evaluation.title;
@@ -123,7 +127,7 @@
         });
     }
 
-    save();
+    persist();
 }
 
     function editQuestion(index) {
@@ -146,18 +150,22 @@
             }
         }
 
-        save();
+        persist();
     }
 
     function deleteQuestion(index) {
         evaluation.questions.splice(index, 1);
-        save();
+        persist();
     }
 
-    function save() {
-        localStorage.setItem("draftEvaluation", JSON.stringify(evaluation));
-        render();
-    }
+    function persist() {
+    let evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
+    evaluations = evaluations.map(ev =>
+        ev.id === evaluation.id ? evaluation : ev
+    );
+    localStorage.setItem("evaluations", JSON.stringify(evaluations));
+    render();
+}
 
     function generateQR() {
         localStorage.setItem("qrEvaluation", JSON.stringify(evaluation));
@@ -166,55 +174,51 @@
     }
 
     function goBack() {
-        if (evaluation.origin === "neue_evaluation") {
-            window.location.href = "neue_evaluation.html";
-        } else {
-            window.location.href = "evaluationen.html";
-        }
-    }
+    const source = localStorage.getItem("evaluationSource");
 
+    if (source === "neue_evaluation") {
+        window.location.href = "neue_evaluation.html";
+    } else {
+        window.location.href = "evaluationen.html";
+    }
+}
     function saveEvaluation() {
 
-        const title = document.getElementById("evalTitle").value;
-        if (!title) {
-            alert("Bitte Titel eingeben");
-            return;
-        }
-        if (evaluation.questions.length === 0) {
-            alert("Bitte mindestens eine Frage hinzufügen");
-            return;
-        }
-
-        evaluation.title = title;
-        evaluation.course = localStorage.getItem("selectedCourse");
-
-        let evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
-
     
-        evaluations = evaluations.filter(e => e.id !== evaluation.id);
-
-    
-        evaluations.push(evaluation);
-
-        localStorage.setItem("evaluations", JSON.stringify(evaluations));
-
-        localStorage.setItem("selectedCourse", evaluation.course);
-
-    
-        localStorage.removeItem("draftEvaluation");
-        localStorage.removeItem("currentEvaluationId");
-
-        const source = localStorage.getItem("evaluationSource");
-
-        if (source === "neue_evaluation") {
-            window.location.href = "neue_evaluation.html";
-        } else {
-            window.location.href = "evaluationen.html";
-        }
-
-        localStorage.removeItem("evaluationSource");
+    if (!inputTitle) {
+        alert("Bitte Titel eingeben");
+        return;
     }
 
+    if (!evaluation || evaluation.questions.length === 0) {
+        alert("Bitte mindestens eine Frage hinzufügen");
+        return;
+    }
+
+    const course = localStorage.getItem("selectedCourse");
+    const inputTitle = document.getElementById("evalTitle").value.trim();
+
+    evaluation.title = `${course} – ${inputTitle}`;
+    evaluation.course = course;
+    evaluation.origin = "evaluationen";
+
+    let evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
+    // cập nhật hoặc thêm mới
+    evaluations = evaluations.filter(e => e.id !== evaluation.id);
+    evaluations.push(evaluation);
+
+    localStorage.setItem("evaluations", JSON.stringify(evaluations));
+
+    localStorage.removeItem("currentEvaluationId");
+    localStorage.removeItem("evaluationSource");
+
+    //const source = localStorage.getItem("evaluationSource");
+
+    window.location.href =
+        source === "neue_evaluation"
+        ? "neue_evaluation.html"
+        : "evaluationen.html";
+}
     render();
 </script>
 
