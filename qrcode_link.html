@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="style.css">
+<title>QR Code</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+<style>
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial;
+    background: #f4f6f8;
+}
+
+.box {
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+#qr {
+    margin: 20px auto;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+    <h2 id="title"></h2>
+    <div id="qr"></div>
+    <a id="qrLink" href="#" target="_blank"
+        style="display:block; margin-top:15px; color:#1a73e8; text-decoration:underline;">
+    </a>
+
+    <br>
+    <button class="add-btn" onclick="goBack()">⬅ Zurück</button>
+</div>
+
+<script>
+const evaluation = JSON.parse(localStorage.getItem("qrEvaluation"));
+
+if (!evaluation) {
+    document.getElementById("title").innerText = "Keine Evaluation gefunden";
+} else {
+    document.getElementById("title").innerText =
+        "QR Code für: " + evaluation.title;
+
+    new QRCode(document.getElementById("qr"), {
+        text: "Evaluation-ID: " + evaluation.id,
+        width: 200,
+        height: 200
+    });
+
+    const link = "https://evaluation.atmeb.de/" + evaluation.id;
+
+    const linkEl = document.getElementById("qrLink");
+    linkEl.innerText = "Link zur Evaluation: " + link;
+    linkEl.href = link; 
+
+    linkEl.onclick = (e) => {
+        e.preventDefault();
+        alert("Dies ist nur ein Prototyp-Link 🙂");
+    };
+}
+
+function goBack() {
+    const from = localStorage.getItem("fromPage") || "evaluation_detail.html";
+    window.location.href = from;
+}
+</script>
+
+</body>
+</html>
