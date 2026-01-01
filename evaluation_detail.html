@@ -1,0 +1,224 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Evaluation Details</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="nav-left">
+        <span class="group-logo">ATMEB</span>
+
+        <div class="nav-links">
+            <span class="burger-logo">☰</span>
+            <a href="#" class="nav-link">Menü</a>
+            <a href="#" class="nav-link">Kurse</a>
+            <a href="#" class="nav-link">Evaluationen</a>
+            <a href="#" class="nav-link">Einstellungen</a>
+        </div>
+    </div>
+
+    <div class="nav-right">
+        <span id="user-display"></span>
+        <div class="profile-circle"></div>
+    </div>
+</nav>
+
+<!-- CONTENT -->
+<div class="content-wrapper">
+    <h1 class="main-title">Evaluation Details</h1>
+    <label>Evaluation Titel</label><br>
+        <input type="text" id="evalTitle" placeholder="z.B. Midterm Feedback">
+    <br><br>
+    
+    <ul id="questionList"></ul>
+
+    <!-- BUTTONS -->
+    <button class="add-btn" onclick="addQuestion()">➕ Neue Frage</button>
+    <button class="add-btn" onclick="saveEvaluation()">💾 Speichern</button>
+    <button class="add-btn" onclick="generateQR()">🔗 QR Code / Link</button>
+    <button class="add-btn" onclick="goBack()">⬅ Zurück</button>
+
+    <p id="status"></p>
+
+    <div id="qrContainer" style="margin-top:20px;"></div>
+</div>
+
+<script>
+    const evaluationId = Number(localStorage.getItem("currentEvaluationId"));
+    let evaluation = null;
+
+    let evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
+
+    if (!isNaN(evaluationId)) {
+        evaluation = evaluations.find(e => e.id === evaluationId);
+    }
+
+    
+    if (!evaluation) {
+        evaluation = JSON.parse(localStorage.getItem("draftEvaluation"));
+    }
+
+    if (evaluation && evaluation.title) {
+        document.getElementById("evalTitle").value = evaluation.title;
+    }
+
+    const list = document.getElementById("questionList");
+
+    function render() {
+        list.innerHTML = "";
+
+        evaluation.questions.forEach((q, i) => {
+            const li = document.createElement("li");
+
+            let html = `<strong>${q.text}</strong> (${q.type})`;
+
+            if (q.type === "choice") {
+                html += "<ul>";
+                q.options.forEach(opt => {
+                    html += `<li>${opt}</li>`;
+                });
+                html += "</ul>";
+            }
+
+            html += `
+                <button onclick="editQuestion(${i})">✏️</button>
+                <button onclick="deleteQuestion(${i})">🗑️</button>
+            `;
+
+            li.innerHTML = html;
+            list.appendChild(li);
+        });
+    }
+
+    function addQuestion() {
+    const text = prompt("Frage eingeben:");
+    if (!text) return;
+
+    const type = prompt(
+        "Fragetyp wählen:\ntext = Freitext\nchoice = Ankreuzen",
+        "text"
+    );
+
+    if (type === "choice") {
+        const optionsInput = prompt(
+            "Antwortmöglichkeiten (durch Komma getrennt):",
+            "Sehr gut, Gut, OK, Schlecht"
+        );
+        if (!optionsInput) return;
+
+        evaluation.questions.push({
+            text: text,
+            type: "choice",
+            options: optionsInput.split(",").map(o => o.trim())
+        });
+    } else {
+        evaluation.questions.push({
+            text: text,
+            type: "text"
+        });
+    }
+
+    save();
+}
+
+    function editQuestion(index) {
+        let q = evaluation.questions[index];
+
+        // edit Fragen
+        const newText = prompt("Frage bearbeiten:", q.text);
+        if (!newText) return;
+        q.text = newText;
+
+        // mulitichoice Fragen -> Antworten
+        if (q.type === "choice") {
+            let newOptions = prompt(
+                "Antwortmöglichkeiten (durch Komma getrennt):",
+                q.options.join(", ")
+            );
+
+            if (newOptions) {
+                q.options = newOptions.split(",").map(o => o.trim());
+            }
+        }
+
+        save();
+    }
+
+    function deleteQuestion(index) {
+        evaluation.questions.splice(index, 1);
+        save();
+    }
+
+    function save() {
+        localStorage.setItem("draftEvaluation", JSON.stringify(evaluation));
+        render();
+    }
+
+    function generateQR() {
+        localStorage.setItem("qrEvaluation", JSON.stringify(evaluation));
+        localStorage.setItem("fromPage", "evaluation_detail.html");
+        window.location.href = "qr_code.html";
+    }
+
+    function goBack() {
+        if (evaluation.origin === "neue_evaluation") {
+            window.location.href = "neue_evaluation.html";
+        } else {
+            window.location.href = "evaluationen.html";
+        }
+    }
+
+    function saveEvaluation() {
+
+        const title = document.getElementById("evalTitle").value;
+        if (!title) {
+            alert("Bitte Titel eingeben");
+            return;
+        }
+        if (evaluation.questions.length === 0) {
+            alert("Bitte mindestens eine Frage hinzufügen");
+            return;
+        }
+
+        evaluation.title = title;
+        evaluation.course = localStorage.getItem("selectedCourse");
+
+        let evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
+
+    
+        evaluations = evaluations.filter(e => e.id !== evaluation.id);
+
+    
+        evaluations.push(evaluation);
+
+        localStorage.setItem("evaluations", JSON.stringify(evaluations));
+
+        localStorage.setItem("selectedCourse", evaluation.course);
+
+    
+        localStorage.removeItem("draftEvaluation");
+        localStorage.removeItem("currentEvaluationId");
+
+        const source = localStorage.getItem("evaluationSource");
+
+        if (source === "neue_evaluation") {
+            window.location.href = "neue_evaluation.html";
+        } else {
+            window.location.href = "evaluationen.html";
+        }
+
+        localStorage.removeItem("evaluationSource");
+    }
+
+    render();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+
+</body>
+</html>
