@@ -35,20 +35,20 @@
     </div>
 
     <div class="courses-grid">
-        <div class="course-box" onclick="window.location.href='neue_evaluation.html'">
+        <div class="course-box" onclick="localStorage.setItem('selectedCourse', 'Mensch Computer Interaktion'); window.location.href='evaluationen.html'">
             <h3>Mensch Computer Interaktion</h3>
-            <small>WS 2025</small> </div>
+            <small>WS 2025</small>
         </div>
 
-        <div class="course-box" onclick="window.location.href='neue_evaluation.html'">
+        <div class="course-box" onclick="localStorage.setItem('selectedCourse', 'Programmieren I'); window.location.href='evaluationen.html'">
             <h3>Programmieren I</h3>
-            <small>WS 2025</small> </div>
+            <small>WS 2025</small>
         </div>
     </div>
 </div>
 
 <script>
-    // Kullanıcı adını göster
+
     const storedUser = localStorage.getItem("username");
     document.getElementById("user-display").innerText = storedUser ? storedUser : "Gast";
 
@@ -67,7 +67,7 @@
         
         newBox.onclick = function () {
     localStorage.setItem("selectedCourse", kurs.name);
-    window.location.href = "evaluationen.html"; //
+    window.location.href = "evaluationen.html"; 
 };
 
 
