@@ -49,22 +49,27 @@
 </div>
 
 <script>
-    //ID der aktuell bearbeiteten Eva
     const evaluationId = Number(localStorage.getItem("currentEvaluationId"));
-    let evaluation = null;
+let evaluation = null;
 
-    //alle gespeicherten Eva laden
-    let evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
+// 1. thử load evaluation cũ (edit)
+let evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
+if (!isNaN(evaluationId)) {
+    evaluation = evaluations.find(e => e.id === evaluationId);
+}
 
-    //falls bearbeiten: Eva aus der Liste holen
-    if (!isNaN(evaluationId)) {
-        evaluation = evaluations.find(e => e.id === evaluationId);
-    }
+// 2. nếu không có → TẠO MỚI
+if (!evaluation) {
+    evaluation = {
+        id: Date.now(),
+        course: localStorage.getItem("selectedCourse"),
+        title: "",
+        questions: [],
+        origin: localStorage.getItem("evaluationSource") || "evaluationen"
+    };
+}
 
-    //falls Neu: Draft-Eva verwenden
-    if (!evaluation) {
-        evaluation = JSON.parse(localStorage.getItem("draftEvaluation"));
-    }
+    
 
     //Titel automatisch setzen
     if (evaluation && evaluation.title) {
@@ -160,14 +165,13 @@
     }
 
     function save() {
-        localStorage.setItem("draftEvaluation", JSON.stringify(evaluation));
         render();
     }
 
     function generateQR() {
         localStorage.setItem("qrEvaluation", JSON.stringify(evaluation));
         localStorage.setItem("fromPage", "evaluation_detail.html");
-        window.location.href = "qr_code.html";
+        window.location.href = "qrcode_link.html";
     }
 
     //zurueck je nach Erstellungsseite
@@ -186,28 +190,27 @@
             alert("Bitte Titel eingeben");
             return;
         }
-        if (evaluation.questions.length === 0) {
+        if (!evaluation || evaluation.questions.length === 0) {
             alert("Bitte mindestens eine Frage hinzufügen");
             return;
         }
 
         evaluation.title = title;
         evaluation.course = localStorage.getItem("selectedCourse");
+        evaluation.origin = "evaluationen";
 
         let evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
 
-        //alte Version entfernen und neue speichern
-        evaluations = evaluations.filter(e => e.id !== evaluation.id);
+        const index = evaluations.findIndex(e => e.id === evaluation.id);
 
-    
-        evaluations.push(evaluation);
+        if (index === -1) {
+            evaluations.push(evaluation);      // neue Evaluation
+        } else {
+            evaluations[index] = evaluation;   // bestehende aktualisieren
+        }
 
         localStorage.setItem("evaluations", JSON.stringify(evaluations));
 
-        localStorage.setItem("selectedCourse", evaluation.course);
-
-    
-        localStorage.removeItem("draftEvaluation");
         localStorage.removeItem("currentEvaluationId");
 
         //Rueckkehr zur richtigen Seite
@@ -221,6 +224,7 @@
 
         localStorage.removeItem("evaluationSource");
     }
+
 
     render();
 </script>
