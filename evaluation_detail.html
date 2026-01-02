@@ -54,10 +54,27 @@
 <script>
     //const course = localStorage.getItem("selectedCourse") || "";
 //document.getElementById("coursePrefix").innerText = course + " – ";
-    const evaluationId = Number(localStorage.getItem("currentEvaluationId"));
-const evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
+    let evaluation = null;
 
-const evaluation = evaluations.find(e => e.id === evaluationId);
+const evaluationId = Number(localStorage.getItem("currentEvaluationId"));
+let evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
+
+if (!isNaN(evaluationId)) {
+    evaluation = evaluations.find(e => e.id === evaluationId);
+}
+
+
+if (!evaluation) {
+    evaluation = {
+        id: Date.now(),
+        course: localStorage.getItem("selectedCourse"),
+        title: "",
+        questions: [],
+        origin: "evaluationen"
+    };
+
+    localStorage.setItem("currentEvaluationId", evaluation.id);
+}
 
 if (!evaluation) {
     alert("Evaluation konnte nicht geladen werden");
@@ -182,9 +199,10 @@ if (!evaluation) {
         window.location.href = "evaluationen.html";
     }
 }
-    function saveEvaluation() {
 
-    
+    function saveEvaluation() {
+    const inputTitle = document.getElementById("evalTitle").value.trim();
+
     if (!inputTitle) {
         alert("Bitte Titel eingeben");
         return;
@@ -196,29 +214,35 @@ if (!evaluation) {
     }
 
     const course = localStorage.getItem("selectedCourse");
-    const inputTitle = document.getElementById("evalTitle").value.trim();
 
-    evaluation.title = `${course} – ${inputTitle}`;
+    
+    if (!inputTitle.startsWith(course)) {
+        evaluation.title = `${course} – ${inputTitle}`;
+    } else {
+        evaluation.title = inputTitle;
+    }
+
     evaluation.course = course;
     evaluation.origin = "evaluationen";
 
     let evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
-    // cập nhật hoặc thêm mới
-    evaluations = evaluations.filter(e => e.id !== evaluation.id);
-    evaluations.push(evaluation);
+
+    
+    const index = evaluations.findIndex(e => e.id === evaluation.id);
+    if (index !== -1) {
+        evaluations[index] = evaluation;
+    } else {
+        evaluations.push(evaluation);
+    }
 
     localStorage.setItem("evaluations", JSON.stringify(evaluations));
 
     localStorage.removeItem("currentEvaluationId");
     localStorage.removeItem("evaluationSource");
 
-    //const source = localStorage.getItem("evaluationSource");
-
-    window.location.href =
-        source === "neue_evaluation"
-        ? "neue_evaluation.html"
-        : "evaluationen.html";
+    window.location.href = "evaluationen.html";
 }
+    
     render();
 </script>
 
