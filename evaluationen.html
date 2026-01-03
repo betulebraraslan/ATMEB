@@ -16,9 +16,15 @@
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
             <h1 class="main-title" id="courseHeader" style="margin: 0;">Evaluationen</h1>
 
-            <button class="add-btn" onclick="goToNeueEvaluation()">
-                Neue Evaluation erstellen
-            </button>
+            <div style="display: flex; gap: 10px;">
+                <button class="add-btn" onclick="goToDashboard()">
+                    📊 Kursübersicht
+                </button>
+
+                <button class="add-btn" onclick="goToNeueEvaluation()">
+                    Neue Evaluation erstellen
+                </button>
+            </div>
         </div>
     </div>
 
@@ -114,6 +120,10 @@ function goToNeueEvaluation() {
     localStorage.removeItem("currentEvaluationId");
     localStorage.setItem("evaluationSource", "evaluationen");
     window.location.href = "neue_evaluation.html";
+}
+
+function goToDashboard() {
+    window.location.href = "dashboard.html";
 }
 </script>
 
