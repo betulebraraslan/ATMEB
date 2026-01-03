@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Kursübersicht</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="content-wrapper">
+
+    <!-- Zurück zur Evaluationsübersicht -->
+    <div style="margin-bottom: 30px;">
+        <button class="add-btn" onclick="window.location.href='evaluationen.html'">
+            ← Zurück zu Evaluationen
+        </button>
+    </div>
+
+    <!-- Dashboard-Titel -->
+    <h1 class="main-title" id="dashboardHeader">
+        Kursübersicht
+    </h1>
+
+    <!-- KPI-Karten -->
+    <div class="dashboard-cards">
+
+        <div class="dashboard-card">
+            <h3>⭐ Zufriedenheit der Studierenden</h3>
+            <div class="value">4.2 / 5</div>
+            <div class="description">Durchschnittliche Bewertung</div>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>😵 Schwierigkeitsgrad</h3>
+            <div class="value">3.6 / 5</div>
+            <div class="description">Durchschnittliche Schwierigkeit</div>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>📊 Teilnahmequote</h3>
+            <div class="value">78%</div>
+            <div class="description">Studierende haben teilgenommen</div>
+        </div>
+
+    </div>
+
+    <!-- Wochenübersicht -->
+    <div style="margin-top: 60px;">
+        <h2>📈 Verlauf pro Woche</h2>
+
+        <ul style="margin-top: 20px; line-height: 1.8;">
+            <li>Woche 1 – Zufriedenheit: 4.5 / Schwierigkeit: 3.2</li>
+            <li>Woche 2 – Zufriedenheit: 4.1 / Schwierigkeit: 3.6</li>
+            <li>Woche 3 – Zufriedenheit: 3.9 / Schwierigkeit: 4.0</li>
+        </ul>
+    </div>
+
+    <!-- Diagramm-Bereich -->
+    <div style="margin-top: 60px;">
+        <h2>📊 Grafische Auswertung</h2>
+
+        <div class="dashboard-cards">
+
+            <div class="dashboard-card">
+                <h3>⭐ Zufriedenheit pro Woche</h3>
+                <canvas id="satisfactionChart" height="120"></canvas>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>😵 Schwierigkeit pro Woche</h3>
+                <canvas id="difficultyChart" height="120"></canvas>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Kommentare -->
+    <div style="margin-top: 60px;">
+        <h2>💬 Wichtige Studierendenkommentare</h2>
+
+        <div style="margin-top: 20px;">
+            <p class="comment">“Die Übungen waren in Woche 3 sehr schwer.”</p>
+            <p class="comment">“Mehr Beispiele wären hilfreich.”</p>
+            <p class="comment">“Vorlesung gut erklärt, aber etwas zu schnell.”</p>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Kursname aus dem Local Storage laden
+    const selectedCourse = localStorage.getItem("selectedCourse") || "Kurs";
+
+    // Titel dynamisch setzen
+    document.getElementById("dashboardHeader").innerText =
+        "Kursübersicht – " + selectedCourse;
+
+    // Diagrammdaten (Beispielwerte)
+    const weeks = ["Woche 1", "Woche 2", "Woche 3"];
+
+    // Zufriedenheit – Liniendiagramm
+    new Chart(document.getElementById("satisfactionChart"), {
+        type: "line",
+        data: {
+            labels: weeks,
+            datasets: [{
+                label: "Zufriedenheit",
+                data: [4.5, 4.1, 3.9],
+                borderWidth: 2,
+                tension: 0.3
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    min: 0,
+                    max: 5
+                }
+            }
+        }
+    });
+
+    // Schwierigkeit – Balkendiagramm
+    new Chart(document.getElementById("difficultyChart"), {
+        type: "bar",
+        data: {
+            labels: weeks,
+            datasets: [{
+                label: "Schwierigkeit",
+                data: [3.2, 3.6, 4.0]
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    min: 0,
+                    max: 5
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
