@@ -52,13 +52,13 @@
     const evaluationId = Number(localStorage.getItem("currentEvaluationId"));
 let evaluation = null;
 
-// 1. thử load evaluation cũ (edit)
+
 let evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
 if (!isNaN(evaluationId)) {
     evaluation = evaluations.find(e => e.id === evaluationId);
 }
 
-// 2. nếu không có → TẠO MỚI
+
 if (!evaluation) {
     evaluation = {
         id: Date.now(),

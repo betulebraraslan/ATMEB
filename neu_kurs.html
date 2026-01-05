@@ -136,16 +136,16 @@
             const kursname = kursnameInput.value.trim();
             const semester = semesterInput.value.trim();
             
-            // Veriyi hep aynı isimle (ekstraKurs) alıyoruz
+           
             let Kurse = JSON.parse(localStorage.getItem("ekstraKurs")) || [];
             
-            // Yeni kursu ekle
+            
             Kurse.push({ name: kursname, sem: semester });
             
-            // Aynı isimle (ekstraKurs) kaydediyoruz
+            
             localStorage.setItem("ekstraKurs", JSON.stringify(Kurse));
 
-            // Übersicht'e dön
+            
             window.location.href = "uebersicht.html";
         }
     </script>

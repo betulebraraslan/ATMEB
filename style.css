@@ -61,11 +61,7 @@ button:hover {
 
 
 
-/* --- Übersicht Sayfası Eklemeleri --- */
 
-
-
-/* Navigasyon Çubuğu */
 
 .navbar {
     display: flex;
@@ -88,14 +84,14 @@ button:hover {
 .group-logo {
     font-weight: bold;
     font-size: 24px;
-    color: #ffffff; /* Yeşil logo rengi */
+    color: #ffffff; 
     letter-spacing: 1px;
 }
 
 .nav-links {
     display: flex;
     align-items: center;
-    gap: 30px; /* Menü, Kurse, Evaluationen arasındaki boşluk */
+    gap: 30px; 
 }
 
 .nav-link {
@@ -104,7 +100,7 @@ button:hover {
     transition: all 0.3s;
 }
 
-/* Üzerine gelince renk değişimi ve punto büyümesi */
+
 
 .nav-link:hover {
     color: #4CAF50;
@@ -125,7 +121,7 @@ button:hover {
 }
 
 
-/* Sayfa İçeriği */
+
 
 .content-wrapper {
     padding: 40px;
@@ -147,11 +143,11 @@ button:hover {
 
 
 .add-btn {
-    width: auto; /* Login butonundan farklı olarak genişliği otomatik yapıyoruz */
+    width: auto; 
     padding: 10px 20px;
 }
 
-/* Kurs Kutuları */
+
 
 .courses-grid {
     margin-top: 20px;
@@ -163,7 +159,7 @@ button:hover {
     background-color: white;
     padding: 50px 30px;
     margin-bottom: 20px;
-    border-radius: 20px; /* Yuvarlanmış köşeler */
+    border-radius: 20px; 
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     cursor: pointer;
 }
@@ -176,21 +172,21 @@ button:hover {
 }
 
 
-/* Kurs kutusunun üzerine gelince renk değişimi */
+
 
 .course-box:hover {
-    background-color: #e8f5e9; /* Çok açık yeşil bir ton */
-    transform: translateY(-5px); /* Hafif yukarı kayma efekti (zaten eklemiştik) */
+    background-color: #e8f5e9; 
+    transform: translateY(-5px); 
     box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-    transition: background-color 0.3s ease; /* Renk geçişinin yumuşak olması için */
+    transition: background-color 0.3s ease;
 }
 
 
 
-/* Eğer içindeki yazıların rengini de değiştirmek istersen bunu da ekleyebilirsin */
+
 
 .course-box:hover h3 {
-    color: #2e7d32; /* Yazıyı biraz daha koyu yeşil yapar */
+    color: #2e7d32; 
 }
 /* ===== Dashboard Layout ===== */
 
