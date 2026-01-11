@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Neu Kurs</title>
+    <title>Neuer Kurs</title>
 
     <style>
         body {
@@ -77,14 +77,14 @@
         .actions button:hover {
             background-color: #6fb35f;
         }
+
         .actions button:disabled {
-           background-color: #bfcfb8;
-           cursor: not-allowed;
+            background-color: #bfcfb8;
+            cursor: not-allowed;
         }
     </style>
 </head>
 <body>
-
 
     <div class="top-bar">
         <button onclick="window.location.href='uebersicht.html'">
@@ -92,62 +92,54 @@
         </button>
     </div>
 
-  
     <div class="container">
         <h2>Neuen Kurs hinzufügen</h2>
 
-        <div class="form-row">
-            <label for="kursname">Name des Kurses</label>
-            <input id="kursname" type="text" placeholder=" z. B. Mensch-Computer Interaktion">
-        </div>
+        <form id="kursForm">
+            <div class="form-row">
+                <label for="kursname">Name des Kurses</label>
+                <input id="kursname" type="text" placeholder=" z. B. Mensch-Computer Interaktion">
+            </div>
 
-        <div class="form-row">
-            <label for="semester">Semester</label>
-            <input id="semester" type="text" placeholder=" z. B. WS 2025">
-        </div>
+            <div class="form-row">
+                <label for="semester">Semester</label>
+                <input id="semester" type="text" placeholder=" z. B. WS 2025">
+            </div>
 
-        <div class="actions">
-            <button id="submitBtn" onclick="confirmAdd()" disabled>
-                speichern
-            </button>
-        </div>
+            <div class="actions">
+                <button id="submitBtn" type="submit" disabled>
+                    speichern
+                </button>
+            </div>
+        </form>
     </div>
 
     <script>
         const kursnameInput = document.getElementById("kursname");
         const semesterInput = document.getElementById("semester");
         const submitBtn = document.getElementById("submitBtn");
-    
+        const kursForm = document.getElementById("kursForm");
+
         function checkInputs() {
-            if (
-                kursnameInput.value.trim() !== "" &&
-                semesterInput.value.trim() !== ""
-            ) {
-                submitBtn.disabled = false;
-            } else {
-                submitBtn.disabled = true;
-            }
+            submitBtn.disabled =
+                kursnameInput.value.trim() === "" || semesterInput.value.trim() === "";
         }
-    
+
         kursnameInput.addEventListener("input", checkInputs);
         semesterInput.addEventListener("input", checkInputs);
-    
-        function confirmAdd() {
+
+        kursForm.addEventListener("submit", function (e) {
+            e.preventDefault(); // verhindert Seitenreload
+
             const kursname = kursnameInput.value.trim();
             const semester = semesterInput.value.trim();
-            
-           
+
             let Kurse = JSON.parse(localStorage.getItem("ekstraKurs")) || [];
-            
-            
             Kurse.push({ name: kursname, sem: semester });
-            
-            
             localStorage.setItem("ekstraKurs", JSON.stringify(Kurse));
 
-            
             window.location.href = "uebersicht.html";
-        }
+        });
     </script>
 
 </body>
