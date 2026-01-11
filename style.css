@@ -280,3 +280,63 @@ ul li {
     border-radius: 10px;
     margin-bottom: 10px;
 }
+
+/* Speichern-Button hervorheben */
+.save-btn {
+    background-color: #28a745;  /* kräftiges Grün */
+    color: white;               /* weiße Schrift */
+    font-size: 18px;            /* größere Schrift */
+    padding: 16px 32px;         /* größere Fläche */
+    border-radius: 8px;         /* abgerundete Ecken */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-weight: bold;
+}
+
+.save-btn:hover {
+    background-color: #218838;  /* dunkleres Grün beim Hover */
+}
+/* Button-Gruppe */
+.action-group {
+    display: flex;
+    justify-content: space-between; /* Sekundäre links, primär rechts */
+    align-items: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+/* Sekundäre Buttons */
+.secondary-btn {
+    background-color: #f0f0f0; /* hellgrau */
+    color: #333;
+    border: 1px solid #ccc;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: background-color 0.2s;
+}
+
+.secondary-btn:hover {
+    background-color: #e0e0e0;
+}
+
+/* Primärer Speichern-Button */
+.save-btn {
+    background-color: #28a745;  /* kräftiges Grün */
+    color: white;
+    font-size: 16px;
+    padding: 14px 28px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.save-btn:hover {
+    background-color: #218838;
+}
+
