@@ -4,15 +4,143 @@
     <meta charset="UTF-8">
     <title>Evaluation Details</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #2c3e50;
+            color: white;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+
+        .profile-circle {
+            width: 35px;
+            height: 35px;
+            background-color: #fff;
+            border-radius: 50%;
+        }
+
+        /* Content */
+        .content-wrapper {
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        h1.main-title {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        ul#questionList {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        ul#questionList li {
+            padding: 8px 10px;
+            background-color: #f9f9f9;
+            margin-bottom: 8px;
+            border-radius: 4px;
+        }
+
+        ul#questionList li button {
+            margin-left: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+
+        /* Button Hierarchy */
+        .action-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .secondary-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .secondary-btn {
+            background-color: #ffffff;
+            color: #2c3e50;
+            border: 1px solid #ccc;
+            padding: 10px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .secondary-btn:hover {
+            background-color: #f0f0f0;
+        }
+
+        .primary-action {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .primary-btn {
+            background-color: #6fb35f;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .primary-btn:hover {
+            background-color: #5ea14d;
+        }
+
+        #qrContainer {
+            margin-top: 20px;
+        }
+    </style>
 </head>
-
 <body>
-
 
 <nav class="navbar">
     <div class="nav-left">
         <span class="group-logo">ATMEB</span>
-
         <div class="nav-links">
             <span class="burger-logo">☰</span>
             <a href="#" class="nav-link">Menü</a>
@@ -21,7 +149,6 @@
             <a href="#" class="nav-link">Einstellungen</a>
         </div>
     </div>
-
     <div class="nav-right">
         <span id="user-display"></span>
         <div class="profile-circle"></div>
@@ -31,33 +158,38 @@
 <!-- CONTENT -->
 <div class="content-wrapper">
     <h1 class="main-title">Evaluation Details</h1>
+
     <label>Evaluation Titel</label><br>
-        <input type="text" id="evalTitle" placeholder="z.B. Midterm Feedback">
-    <br><br>
-    
+    <input type="text" id="evalTitle" placeholder="z.B. Midterm Feedback">
+
     <ul id="questionList"></ul>
 
     <!-- BUTTONS -->
-    <button class="add-btn" onclick="addQuestion()">➕ Neue Frage</button>
-    <button class="add-btn" onclick="saveEvaluation()">💾 Speichern</button>
-    <button class="add-btn" onclick="generateQR()">🔗 QR Code / Link</button>
-    <button class="add-btn" onclick="goBack()">⬅ Zurück</button>
+    <div class="action-group">
+        <div class="secondary-actions">
+            <button class="secondary-btn" onclick="addQuestion()">➕ Neue Frage</button>
+            <button class="secondary-btn" onclick="generateQR()">🔗 QR Code / Link</button>
+            <button class="secondary-btn" onclick="goBack()">⬅ Zurück</button>
+        </div>
+        <div class="primary-action">
+            <button class="primary-btn" onclick="saveEvaluation()">💾 Speichern</button>
+        </div>
+    </div>
 
     <p id="status"></p>
-
-    <div id="qrContainer" style="margin-top:20px;"></div>
+    <div id="qrContainer"></div>
 </div>
 
-<script>
-    const evaluationId = Number(localStorage.getItem("currentEvaluationId"));
-let evaluation = null;
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 
+<script>
+const evaluationId = Number(localStorage.getItem("currentEvaluationId"));
+let evaluation = null;
 
 let evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
 if (!isNaN(evaluationId)) {
     evaluation = evaluations.find(e => e.id === evaluationId);
 }
-
 
 if (!evaluation) {
     evaluation = {
@@ -69,43 +201,39 @@ if (!evaluation) {
     };
 }
 
-    
+// Titel automatisch setzen
+if (evaluation && evaluation.title) {
+    document.getElementById("evalTitle").value = evaluation.title;
+}
 
-    //Titel automatisch setzen
-    if (evaluation && evaluation.title) {
-        document.getElementById("evalTitle").value = evaluation.title;
-    }
+const list = document.getElementById("questionList");
 
-    const list = document.getElementById("questionList");
+// Rendert alle Fragen
+function render() {
+    list.innerHTML = "";
+    evaluation.questions.forEach((q, i) => {
+        const li = document.createElement("li");
+        let html = `<strong>${q.text}</strong> (${q.type})`;
 
-    //Rendert alle Fragen
-    function render() {
-        list.innerHTML = "";
+        if (q.type === "choice") {
+            html += "<ul>";
+            q.options.forEach(opt => {
+                html += `<li>${opt}</li>`;
+            });
+            html += "</ul>";
+        }
 
-        evaluation.questions.forEach((q, i) => {
-            const li = document.createElement("li");
+        html += `
+            <button onclick="editQuestion(${i})">✏️</button>
+            <button onclick="deleteQuestion(${i})">🗑️</button>
+        `;
 
-            let html = `<strong>${q.text}</strong> (${q.type})`;
+        li.innerHTML = html;
+        list.appendChild(li);
+    });
+}
 
-            if (q.type === "choice") {
-                html += "<ul>";
-                q.options.forEach(opt => {
-                    html += `<li>${opt}</li>`;
-                });
-                html += "</ul>";
-            }
-
-            html += `
-                <button onclick="editQuestion(${i})">✏️</button>
-                <button onclick="deleteQuestion(${i})">🗑️</button>
-            `;
-
-            li.innerHTML = html;
-            list.appendChild(li);
-        });
-    }
-
-    function addQuestion() {
+function addQuestion() {
     const text = prompt("Frage eingeben:");
     if (!text) return;
 
@@ -136,100 +264,87 @@ if (!evaluation) {
     save();
 }
 
-    function editQuestion(index) {
-        let q = evaluation.questions[index];
+function editQuestion(index) {
+    let q = evaluation.questions[index];
+    const newText = prompt("Frage bearbeiten:", q.text);
+    if (!newText) return;
+    q.text = newText;
 
-        // edit Fragen
-        const newText = prompt("Frage bearbeiten:", q.text);
-        if (!newText) return;
-        q.text = newText;
-
-        // mulitichoice Fragen -> Antworten
-        if (q.type === "choice") {
-            let newOptions = prompt(
-                "Antwortmöglichkeiten (durch Komma getrennt):",
-                q.options.join(", ")
-            );
-
-            if (newOptions) {
-                q.options = newOptions.split(",").map(o => o.trim());
-            }
-        }
-
-        save();
-    }
-
-    function deleteQuestion(index) {
-        evaluation.questions.splice(index, 1);
-        save();
-    }
-
-    function save() {
-        render();
-    }
-
-    function generateQR() {
-        localStorage.setItem("qrEvaluation", JSON.stringify(evaluation));
-        localStorage.setItem("fromPage", "evaluation_detail.html");
-        window.location.href = "qrcode_link.html";
-    }
-
-    //zurueck je nach Erstellungsseite
-    function goBack() {
-        if (evaluation.origin === "neue_evaluation") {
-            window.location.href = "neue_evaluation.html";
-        } else {
-            window.location.href = "evaluationen.html";
+    if (q.type === "choice") {
+        let newOptions = prompt(
+            "Antwortmöglichkeiten (durch Komma getrennt):",
+            q.options.join(", ")
+        );
+        if (newOptions) {
+            q.options = newOptions.split(",").map(o => o.trim());
         }
     }
 
-    function saveEvaluation() {
+    save();
+}
 
-        const title = document.getElementById("evalTitle").value;
-        if (!title) {
-            alert("Bitte Titel eingeben");
-            return;
-        }
-        if (!evaluation || evaluation.questions.length === 0) {
-            alert("Bitte mindestens eine Frage hinzufügen");
-            return;
-        }
+function deleteQuestion(index) {
+    evaluation.questions.splice(index, 1);
+    save();
+}
 
-        evaluation.title = title;
-        evaluation.course = localStorage.getItem("selectedCourse");
-        evaluation.origin = "evaluationen";
-
-        let evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
-
-        const index = evaluations.findIndex(e => e.id === evaluation.id);
-
-        if (index === -1) {
-            evaluations.push(evaluation);      // neue Evaluation
-        } else {
-            evaluations[index] = evaluation;   // bestehende aktualisieren
-        }
-
-        localStorage.setItem("evaluations", JSON.stringify(evaluations));
-
-        localStorage.removeItem("currentEvaluationId");
-
-        //Rueckkehr zur richtigen Seite
-        const source = localStorage.getItem("evaluationSource");
-
-        if (source === "neue_evaluation") {
-            window.location.href = "neue_evaluation.html";
-        } else {
-            window.location.href = "evaluationen.html";
-        }
-
-        localStorage.removeItem("evaluationSource");
-    }
-
-
+function save() {
     render();
-</script>
+}
 
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+function generateQR() {
+    localStorage.setItem("qrEvaluation", JSON.stringify(evaluation));
+    localStorage.setItem("fromPage", "evaluation_detail.html");
+    window.location.href = "qrcode_link.html";
+}
+
+function goBack() {
+    if (evaluation.origin === "neue_evaluation") {
+        window.location.href = "neue_evaluation.html";
+    } else {
+        window.location.href = "evaluationen.html";
+    }
+}
+
+function saveEvaluation() {
+    const title = document.getElementById("evalTitle").value;
+    if (!title) {
+        alert("Bitte Titel eingeben");
+        return;
+    }
+    if (!evaluation || evaluation.questions.length === 0) {
+        alert("Bitte mindestens eine Frage hinzufügen");
+        return;
+    }
+
+    evaluation.title = title;
+    evaluation.course = localStorage.getItem("selectedCourse");
+    evaluation.origin = "evaluationen";
+
+    let evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
+    const index = evaluations.findIndex(e => e.id === evaluation.id);
+
+    if (index === -1) {
+        evaluations.push(evaluation);
+    } else {
+        evaluations[index] = evaluation;
+    }
+
+    localStorage.setItem("evaluations", JSON.stringify(evaluations));
+    localStorage.removeItem("currentEvaluationId");
+
+    const source = localStorage.getItem("evaluationSource");
+    if (source === "neue_evaluation") {
+        window.location.href = "neue_evaluation.html";
+    } else {
+        window.location.href = "evaluationen.html";
+    }
+
+    localStorage.removeItem("evaluationSource");
+}
+
+render();
+</script>
 
 </body>
 </html>
