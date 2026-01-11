@@ -171,9 +171,15 @@ if (!evaluation) {
     }
 
     function deleteQuestion(index) {
+    // Die Sicherheitsabfrage
+    const questionText = evaluation.questions[index].text;
+    const confirmDelete = confirm(`Möchten Sie die Frage "${questionText}" wirklich unwiderruflich löschen?`);
+
+    if (confirmDelete) {
         evaluation.questions.splice(index, 1);
         persist();
     }
+}
 
     function persist() {
     let evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
