@@ -1,18 +1,180 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
     <title>Evaluation Details</title>
-    <link rel="stylesheet" href="style.css">
-</head>
+    <style>
+        /* ===== Grundlayout ===== */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
 
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333;
+            color: white;
+            padding: 15px 30px;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+        }
+
+        .group-logo {
+            font-weight: bold;
+            font-size: 24px;
+            color: #ffffff; 
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 30px; 
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #4CAF50;
+            font-size: 1.1em;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile-circle {
+            width: 35px;
+            height: 35px;
+            background-color: #ccc;
+            border-radius: 50%;
+        }
+
+        /* ===== Content Wrapper ===== */
+        .content-wrapper {
+            max-width: 900px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .main-title {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        #coursePrefix {
+            font-weight: 600;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        ul#questionList {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        ul#questionList li {
+            padding: 8px 10px;
+            background-color: #f9f9f9;
+            margin-bottom: 8px;
+            border-radius: 4px;
+        }
+
+        ul#questionList li button {
+            margin-left: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+
+        /* ===== Button Hierarchie ===== */
+        .action-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .secondary-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .secondary-btn {
+            background-color: #f0f0f0;
+            color: #333;
+            border: 1px solid #ccc;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+
+        .secondary-btn:hover {
+            background-color: #e0e0e0;
+            transform: translateY(-2px);
+        }
+
+        .primary-action {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .save-btn {
+            background-color: #28a745;
+            color: white;
+            font-size: 16px;
+            padding: 14px 28px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+
+        .save-btn:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        #qrContainer {
+            margin-top: 20px;
+        }
+    </style>
+</head>
 <body>
 
 <nav class="navbar">
     <div class="nav-left">
         <span class="group-logo">ATMEB</span>
-
         <div class="nav-links">
             <span class="burger-logo">☰</span>
             <a href="#" class="nav-link">Menü</a>
@@ -21,48 +183,50 @@
             <a href="#" class="nav-link">Einstellungen</a>
         </div>
     </div>
-
     <div class="nav-right">
         <span id="user-display"></span>
         <div class="profile-circle"></div>
     </div>
 </nav>
 
-<!-- CONTENT -->
 <div class="content-wrapper">
     <h1 class="main-title">Evaluation Details</h1>
-    <label>Evaluation Titel</label><br>
-        <div style="display:flex; gap:8px; align-items:center;">
-    <span id="coursePrefix" style="font-weight:600;"></span>
-    <input type="text" id="evalTitle" placeholder="z.B. Woche 4">
-</div>
-    <br><br>
     
+    <label>Evaluation Titel</label><br>
+    <div style="display:flex; gap:8px; align-items:center;">
+        <span id="coursePrefix"></span>
+        <input type="text" id="evalTitle" placeholder="z.B. Woche 4">
+    </div>
+
+    <br><br>
+
     <ul id="questionList"></ul>
 
-    <!-- BUTTONS -->
-    <button class="add-btn" onclick="addQuestion()">➕ Neue Frage</button>
-    <button class="add-btn" onclick="saveEvaluation()">💾 Speichern</button>
-    <button class="add-btn" onclick="generateQR()">🔗 QR Code / Link</button>
-    <button class="add-btn" onclick="goBack()">⬅ Zurück</button>
+    <!-- Buttons -->
+    <div class="action-group">
+        <div class="secondary-actions">
+            <button class="secondary-btn" onclick="addQuestion()">➕ Neue Frage</button>
+            <button class="secondary-btn" onclick="generateQR()">🔗 QR Code / Link</button>
+            <button class="secondary-btn" onclick="goBack()">⬅ Zurück</button>
+        </div>
+        <div class="primary-action">
+            <button class="save-btn" onclick="saveEvaluation()">💾 Speichern</button>
+        </div>
+    </div>
 
     <p id="status"></p>
-
-    <div id="qrContainer" style="margin-top:20px;"></div>
+    <div id="qrContainer"></div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 <script>
-    //const course = localStorage.getItem("selectedCourse") || "";
-//document.getElementById("coursePrefix").innerText = course + " – ";
-    let evaluation = null;
-
+let evaluation = null;
 const evaluationId = Number(localStorage.getItem("currentEvaluationId"));
 let evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
 
 if (!isNaN(evaluationId)) {
     evaluation = evaluations.find(e => e.id === evaluationId);
 }
-
 
 if (!evaluation) {
     evaluation = {
@@ -72,7 +236,6 @@ if (!evaluation) {
         questions: [],
         origin: "evaluationen"
     };
-
     localStorage.setItem("currentEvaluationId", evaluation.id);
 }
 
@@ -82,54 +245,48 @@ if (!evaluation) {
     throw new Error("Evaluation not found");
 }
 
+// Course prefix anzeigen
+const course = localStorage.getItem("selectedCourse") || "";
+document.getElementById("coursePrefix").innerText = course ? course + " – " : "";
 
+if (evaluation && evaluation.title) {
+    document.getElementById("evalTitle").value = evaluation.title;
+}
 
-    if (evaluation && evaluation.title) {
-        document.getElementById("evalTitle").value = evaluation.title;
-    }
+const list = document.getElementById("questionList");
 
-    const list = document.getElementById("questionList");
+function render() {
+    list.innerHTML = "";
+    evaluation.questions.forEach((q, i) => {
+        const li = document.createElement("li");
+        let html = `<strong>${q.text}</strong> (${q.type})`;
 
-    function render() {
-        list.innerHTML = "";
+        if (q.type === "choice") {
+            html += "<ul>";
+            q.options.forEach(opt => {
+                html += `<li>${opt}</li>`;
+            });
+            html += "</ul>";
+        }
 
-        evaluation.questions.forEach((q, i) => {
-            const li = document.createElement("li");
+        html += `
+            <button onclick="editQuestion(${i})">✏️</button>
+            <button onclick="deleteQuestion(${i})">🗑️</button>
+        `;
 
-            let html = `<strong>${q.text}</strong> (${q.type})`;
+        li.innerHTML = html;
+        list.appendChild(li);
+    });
+}
 
-            if (q.type === "choice") {
-                html += "<ul>";
-                q.options.forEach(opt => {
-                    html += `<li>${opt}</li>`;
-                });
-                html += "</ul>";
-            }
-
-            html += `
-                <button onclick="editQuestion(${i})">✏️</button>
-                <button onclick="deleteQuestion(${i})">🗑️</button>
-            `;
-
-            li.innerHTML = html;
-            list.appendChild(li);
-        });
-    }
-
-    function addQuestion() {
+function addQuestion() {
     const text = prompt("Frage eingeben:");
     if (!text) return;
 
-    const type = prompt(
-        "Fragetyp wählen:\ntext = Freitext\nchoice = Ankreuzen",
-        "text"
-    );
+    const type = prompt("Fragetyp wählen:\ntext = Freitext\nchoice = Ankreuzen", "text");
 
     if (type === "choice") {
-        const optionsInput = prompt(
-            "Antwortmöglichkeiten (durch Komma getrennt):",
-            "Sehr gut, Gut, OK, Schlecht"
-        );
+        const optionsInput = prompt("Antwortmöglichkeiten (durch Komma getrennt):", "Sehr gut, Gut, OK, Schlecht");
         if (!optionsInput) return;
 
         evaluation.questions.push({
@@ -138,67 +295,57 @@ if (!evaluation) {
             options: optionsInput.split(",").map(o => o.trim())
         });
     } else {
-        evaluation.questions.push({
-            text: text,
-            type: "text"
-        });
+        evaluation.questions.push({ text: text, type: "text" });
     }
 
     persist();
 }
 
-    function editQuestion(index) {
-        let q = evaluation.questions[index];
+function editQuestion(index) {
+    let q = evaluation.questions[index];
+    const newText = prompt("Frage bearbeiten:", q.text);
+    if (!newText) return;
+    q.text = newText;
 
-        // edit Fragen
-        const newText = prompt("Frage bearbeiten:", q.text);
-        if (!newText) return;
-        q.text = newText;
-
-        // mulitichoice Fragen -> Antworten
-        if (q.type === "choice") {
-            let newOptions = prompt(
-                "Antwortmöglichkeiten (durch Komma getrennt):",
-                q.options.join(", ")
-            );
-
-            if (newOptions) {
-                q.options = newOptions.split(",").map(o => o.trim());
-            }
+    if (q.type === "choice") {
+        let newOptions = prompt("Antwortmöglichkeiten (durch Komma getrennt):", q.options.join(", "));
+        if (newOptions) {
+            q.options = newOptions.split(",").map(o => o.trim());
         }
-
-        persist();
     }
 
-    function deleteQuestion(index) {
-    // Die Sicherheitsabfrage
-    const questionText = evaluation.questions[index].text;
-    const confirmDelete = confirm(`Möchten Sie die Frage "${questionText}" wirklich unwiderruflich löschen?`);
+    persist();
+}
 
+function deleteQuestion(index) {
+    const questionText = evaluation.questions[index].text;
+    const confirmDelete = confirm(`Möchten Sie die Frage "${questionText}" wirklich löschen?`);
     if (confirmDelete) {
         evaluation.questions.splice(index, 1);
         persist();
     }
 }
 
-    function persist() {
+function persist() {
     let evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
-    evaluations = evaluations.map(ev =>
-        ev.id === evaluation.id ? evaluation : ev
-    );
+    const index = evaluations.findIndex(ev => ev.id === evaluation.id);
+    if (index !== -1) {
+        evaluations[index] = evaluation;
+    } else {
+        evaluations.push(evaluation);
+    }
     localStorage.setItem("evaluations", JSON.stringify(evaluations));
     render();
 }
 
-    function generateQR() {
-        localStorage.setItem("qrEvaluation", JSON.stringify(evaluation));
-        localStorage.setItem("fromPage", "evaluation_detail.html");
-        window.location.href = "qrcode_link.html";
-    }
+function generateQR() {
+    localStorage.setItem("qrEvaluation", JSON.stringify(evaluation));
+    localStorage.setItem("fromPage", "evaluation_detail.html");
+    window.location.href = "qrcode_link.html";
+}
 
-    function goBack() {
+function goBack() {
     const source = localStorage.getItem("evaluationSource");
-
     if (source === "neue_evaluation") {
         window.location.href = "neue_evaluation.html";
     } else {
@@ -206,22 +353,17 @@ if (!evaluation) {
     }
 }
 
-    function saveEvaluation() {
+function saveEvaluation() {
     const inputTitle = document.getElementById("evalTitle").value.trim();
-
     if (!inputTitle) {
         alert("Bitte Titel eingeben");
         return;
     }
-
     if (!evaluation || evaluation.questions.length === 0) {
         alert("Bitte mindestens eine Frage hinzufügen");
         return;
     }
 
-    const course = localStorage.getItem("selectedCourse");
-
-    
     if (!inputTitle.startsWith(course)) {
         evaluation.title = `${course} – ${inputTitle}`;
     } else {
@@ -231,28 +373,16 @@ if (!evaluation) {
     evaluation.course = course;
     evaluation.origin = "evaluationen";
 
-    let evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
-
-    
-    const index = evaluations.findIndex(e => e.id === evaluation.id);
-    if (index !== -1) {
-        evaluations[index] = evaluation;
-    } else {
-        evaluations.push(evaluation);
-    }
-
-    localStorage.setItem("evaluations", JSON.stringify(evaluations));
+    persist();
 
     localStorage.removeItem("currentEvaluationId");
     localStorage.removeItem("evaluationSource");
 
     window.location.href = "evaluationen.html";
 }
-    
-    render();
-</script>
 
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+render();
+</script>
 
 </body>
 </html>
