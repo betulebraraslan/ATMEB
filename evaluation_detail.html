@@ -283,7 +283,7 @@ function addQuestion() {
     const text = prompt("Frage eingeben:", "Wie ist das Vorlesungstempo?");
     if (!text) return;
 
-    const type = prompt("Fragetyp wählen:\ntext = Freitext\nchoice = Mehrfachauswahl", "text");
+    const type = prompt("Fragetyp wählen:\ntext = Freitext\nchoice = Mehrfachauswahl", "choice");
 
     if (type === "choice") {
         const optionsInput = prompt("Antwortmöglichkeiten (durch Komma getrennt):", "zu schnell, angemessen, zu langsam");
