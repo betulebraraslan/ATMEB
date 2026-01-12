@@ -292,6 +292,7 @@ const evaluationId = Number(localStorage.getItem("currentEvaluationId"));
 let evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
 
 if (!isNaN(evaluationId)) {
+    const storedEvaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
     evaluation = evaluations.find(e => e.id === evaluationId);
 }
 
@@ -429,15 +430,28 @@ function hideUndoButton() {
     document.getElementById("undoBtn").style.display = "none";
 }
 
+// function persist() {
+//     // let evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
+//     // const index = evaluations.findIndex(ev => ev.id === evaluation.id);
+//     // if (index !== -1) {
+//     //     evaluations[index] = evaluation;
+//     // } else {
+//     //     evaluations.push(evaluation);
+//     // }
+//     // localStorage.setItem("evaluations", JSON.stringify(evaluations));
+//     render();
+// }
 function persist() {
-    // let evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
-    // const index = evaluations.findIndex(ev => ev.id === evaluation.id);
-    // if (index !== -1) {
-    //     evaluations[index] = evaluation;
-    // } else {
-    //     evaluations.push(evaluation);
-    // }
-    // localStorage.setItem("evaluations", JSON.stringify(evaluations));
+    let evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
+    const index = evaluations.findIndex(ev => ev.id === evaluation.id);
+
+    if (index !== -1) {
+        evaluations[index] = evaluation;
+    } else {
+        evaluations.push(evaluation);
+    }
+
+    localStorage.setItem("evaluations", JSON.stringify(evaluations));
     render();
 }
 
@@ -485,7 +499,7 @@ function saveEvaluation() {
 
     persist();
 
-    localStorage.removeItem("currentEvaluationId");
+    //localStorage.removeItem("currentEvaluationId");
     localStorage.removeItem("evaluationSource");
     hasUnsavedChanges = false;
     //window.location.href = "evaluationen.html";
