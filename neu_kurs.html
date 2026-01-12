@@ -119,25 +119,29 @@
         const semesterInput = document.getElementById("semester");
         const submitBtn = document.getElementById("submitBtn");
         const kursForm = document.getElementById("kursForm");
-
+    
         function checkInputs() {
             submitBtn.disabled =
                 kursnameInput.value.trim() === "" || semesterInput.value.trim() === "";
         }
-
+    
         kursnameInput.addEventListener("input", checkInputs);
         semesterInput.addEventListener("input", checkInputs);
-
+    
         kursForm.addEventListener("submit", function (e) {
             e.preventDefault(); // verhindert Seitenreload
-
+    
             const kursname = kursnameInput.value.trim();
             const semester = semesterInput.value.trim();
-
+    
             let Kurse = JSON.parse(localStorage.getItem("ekstraKurs")) || [];
             Kurse.push({ name: kursname, sem: semester });
             localStorage.setItem("ekstraKurs", JSON.stringify(Kurse));
-
+    
+            //  Bestätigung anzeigen
+            alert("Kurs wurde erfolgreich hinzugefügt.");
+    
+            // Zur Übersicht wechseln
             window.location.href = "uebersicht.html";
         });
     </script>

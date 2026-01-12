@@ -190,12 +190,15 @@
     <label>Evaluation Titel</label><br>
     <input type="text" id="evalTitle" placeholder="z.B. Midterm Feedback">
 
+    <!-- Neue Frage direkt eingeben -->
+    <input type="text" id="newQuestionInput" placeholder="Neue Frage eingeben" disabled>
+    <button class="secondary-btn" id="addQuestionBtn" disabled>Frage hinzufügen</button>
+
     <ul id="questionList"></ul>
 
     <!-- Buttons -->
     <div class="action-group">
         <div class="secondary-actions">
-            <button class="secondary-btn" onclick="addQuestion()">➕ Neue Frage</button>
             <button class="secondary-btn" onclick="generateQR()">🔗 QR Code / Link</button>
             <button class="secondary-btn" onclick="goBack()">⬅ Zurück</button>
         </div>
@@ -236,7 +239,37 @@ if (evaluation && evaluation.title) {
 
 const list = document.getElementById("questionList");
 
-// Rendert alle Fragen
+const titleInput = document.getElementById("evalTitle");
+const questionInput = document.getElementById("newQuestionInput");
+const addQuestionBtn = document.getElementById("addQuestionBtn");
+
+questionInput.addEventListener("focus", () => {
+    if (titleInput.value.trim() === "") {
+        alert("Bitte zuerst einen Evaluationstitel eingeben.");
+        questionInput.blur();
+    }
+});
+
+titleInput.addEventListener("input", () => {
+    const hasTitle = titleInput.value.trim() !== "";
+    questionInput.disabled = !hasTitle;
+    addQuestionBtn.disabled = !hasTitle;
+});
+
+addQuestionBtn.addEventListener("click", () => {
+    const text = questionInput.value.trim();
+    if (!text) return;
+
+    evaluation.questions.push({
+        text: text,
+        type: "text"
+    });
+
+    questionInput.value = "";
+    render();
+});
+
+// 
 function render() {
     list.innerHTML = "";
     evaluation.questions.forEach((q, i) => {
@@ -261,27 +294,7 @@ function render() {
 }
 
 // Funktionen für Fragen
-function addQuestion() {
-    const text = prompt("Frage eingeben:", "Wie ist das Vorlesungstempo?");
-    if (!text) return;
-
-    const type = prompt("Fragetyp wählen:\ntext = Freitext\nchoice = Mehrfachauswahl", "choice");
-
-    if (type === "choice") {
-        const optionsInput = prompt("Antwortmöglichkeiten (durch Komma getrennt):", "zu schnell, angemessen, zu langsam");
-        if (!optionsInput) return;
-
-        evaluation.questions.push({
-            text: text,
-            type: "choice",
-            options: optionsInput.split(",").map(o => o.trim())
-        });
-    } else {
-        evaluation.questions.push({ text: text, type: "text" });
-    }
-
-    save();
-}
+// addQuestion() function removed as per instructions
 
 function editQuestion(index) {
     let q = evaluation.questions[index];

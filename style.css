@@ -340,3 +340,7 @@ ul li {
     background-color: #218838;
 }
 
+.password-hint {
+    font-size: 0.85em;
+    color: #666;
+  }
