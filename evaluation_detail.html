@@ -339,6 +339,12 @@ function persist() {
 }
 
 function generateQR() {
+    if (!evaluation || evaluation.questions.length === 0) {
+        alert(
+            "Bitte fügen Sie mindestens eine Frage zur Evaluation hinzu, indem Sie auf den Button ‚Neue Frage‘ klicken."
+        );
+        return;
+    }
     localStorage.setItem("qrEvaluation", JSON.stringify(evaluation));
     localStorage.setItem("fromPage", "evaluation_detail.html");
     window.location.href = "qrcode_link.html";
