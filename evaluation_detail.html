@@ -280,13 +280,13 @@ function render() {
 }
 
 function addQuestion() {
-    const text = prompt("Frage eingeben:");
+    const text = prompt("Frage eingeben:", "Wie ist das Vorlesungstempo?");
     if (!text) return;
 
-    const type = prompt("Fragetyp wählen:\ntext = Freitext\nchoice = Ankreuzen", "text");
+    const type = prompt("Fragetyp wählen:\ntext = Freitext\nchoice = Mehrfachauswahl", "text");
 
     if (type === "choice") {
-        const optionsInput = prompt("Antwortmöglichkeiten (durch Komma getrennt):", "Sehr gut, Gut, OK, Schlecht");
+        const optionsInput = prompt("Antwortmöglichkeiten (durch Komma getrennt):", "zu schnell", "angemessen", "zu langsam");
         if (!optionsInput) return;
 
         evaluation.questions.push({
@@ -360,7 +360,7 @@ function saveEvaluation() {
         return;
     }
     if (!evaluation || evaluation.questions.length === 0) {
-        alert("Bitte mindestens eine Frage hinzufügen");
+        alert("Bitte fügen Sie mindestens eine Frage hinzu, indem Sie auf den Button ‚Neue Frage‘ klicken.");
         return;
     }
 
