@@ -283,6 +283,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 <script>
+let hasUnsavedChanges = false;
 let evaluation = null;
 
 let lastDeletedQuestion = null;
@@ -365,7 +366,7 @@ function addQuestion() {
     } else {
         evaluation.questions.push({ text: text, type: "text" });
     }
-
+    hasUnsavedChanges = true;
     persist();
 }
 
@@ -381,7 +382,7 @@ function editQuestion(index) {
             q.options = newOptions.split(",").map(o => o.trim());
         }
     }
-
+    hasUnsavedChanges = true;
     persist();
 }
 
@@ -397,6 +398,7 @@ function deleteQuestion(index) {
     lastDeletedIndex = index;
 
     evaluation.questions.splice(index, 1);
+    hasUnsavedChanges = true;
     persist();
 
     showUndoButton();
@@ -428,14 +430,14 @@ function hideUndoButton() {
 }
 
 function persist() {
-    let evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
-    const index = evaluations.findIndex(ev => ev.id === evaluation.id);
-    if (index !== -1) {
-        evaluations[index] = evaluation;
-    } else {
-        evaluations.push(evaluation);
-    }
-    localStorage.setItem("evaluations", JSON.stringify(evaluations));
+    // let evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
+    // const index = evaluations.findIndex(ev => ev.id === evaluation.id);
+    // if (index !== -1) {
+    //     evaluations[index] = evaluation;
+    // } else {
+    //     evaluations.push(evaluation);
+    // }
+    // localStorage.setItem("evaluations", JSON.stringify(evaluations));
     render();
 }
 
@@ -446,6 +448,7 @@ function generateQR() {
         );
         return;
     }
+    localStorage.setItem("currentEvaluationId", evaluation.id);
     localStorage.setItem("qrEvaluation", JSON.stringify(evaluation));
     localStorage.setItem("fromPage", "evaluation_detail.html");
     window.location.href = "qrcode_link.html";
@@ -484,8 +487,12 @@ function saveEvaluation() {
 
     localStorage.removeItem("currentEvaluationId");
     localStorage.removeItem("evaluationSource");
+    hasUnsavedChanges = false;
+    //window.location.href = "evaluationen.html";
 
-    window.location.href = "evaluationen.html";
+    const status = document.getElementById("status");
+    status.style.color = "green";
+    status.innerText = "✅ Evaluation wurde erfolgreich gespeichert.";
 }
 
 function updateProcessHint() {
@@ -500,12 +507,21 @@ function updateProcessHint() {
     } else {
         hint.innerHTML = `
             <strong>Hinweis:</strong>
-            <p>Sie können die Evaluation jetzt speichern oder einen QR-Code erstellen.</p>
+            <p>Sie können die Evaluation jetzt speichern und danach einen QR-Code erstellen.</p>
         `;
     }
 }
 
 render();
+document.getElementById("evalTitle").addEventListener("input", () => {
+    hasUnsavedChanges = true;
+});
+window.addEventListener("beforeunload", function (e) {
+    if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = "";
+    }
+});
 </script>
 
 </body>

@@ -240,7 +240,7 @@
         </ol>
     </div>
     <label>Evaluation Titel</label><br>
-    <input type="text" id="evalTitle" placeholder="z.B. Midterm Feedback">
+    <input type="text" id="evalTitle" placeholder="z.B. Woche 4">
 
 
     <ul id="questionList"></ul>
@@ -276,7 +276,7 @@
 <script>
 const evaluationId = Number(localStorage.getItem("currentEvaluationId"));
 let evaluation = null;
-
+let hasUnsavedChanges = false;
 let evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
 if (!isNaN(evaluationId)) {
     evaluation = evaluations.find(e => e.id === evaluationId);
@@ -344,7 +344,7 @@ function addQuestion() {
     } else {
         evaluation.questions.push({ text: text, type: "text" });
     }
-
+    hasUnsavedChanges = true;
     save();
 }
 
@@ -360,7 +360,7 @@ function editQuestion(index) {
             q.options = newOptions.split(",").map(o => o.trim());
         }
     }
-
+    hasUnsavedChanges = true;
     save();
 }
 
@@ -373,6 +373,7 @@ function deleteQuestion(index) {
     lastDeletedIndex = index;
 
     evaluation.questions.splice(index, 1);
+    hasUnsavedChanges = true;
     persist();
 
     showUndoButton();
@@ -426,19 +427,18 @@ function generateQR() {
         );
         return;
     }
+    localStorage.setItem("currentEvaluationId", evaluation.id);
     localStorage.setItem("qrEvaluation", JSON.stringify(evaluation));
-    localStorage.setItem("fromPage", "evaluation_detail.html");
+    localStorage.setItem("fromPage", "neue_evaluation.html");
     window.location.href = "qrcode_link.html";
 }
 
-function goBack() {
-    if (evaluation.origin === "neue_evaluation") {
-        window.location.href = "neue_evaluation.html";
-    } else {
-        window.location.href = "evaluationen.html";
-    }
-}
 
+function goBack() {
+    localStorage.removeItem("currentEvaluationId");
+    localStorage.removeItem("evaluationSource");
+    window.location.href = "evaluationen.html";
+}
 function saveEvaluation() {
     const titleInput = document.getElementById("evalTitle").value;
     if (!titleInput) {
@@ -464,10 +464,14 @@ function saveEvaluation() {
     }
 
     localStorage.setItem("evaluations", JSON.stringify(evaluations));
-    localStorage.removeItem("currentEvaluationId");
-    const source = localStorage.getItem("evaluationSource"); 
+    hasUnsavedChanges = false; // ⭐ đánh dấu đã lưu
+    //localStorage.removeItem("currentEvaluationId");
+    localStorage.removeItem("evaluationSource");
     
-    window.location.href = "evaluationen.html";
+    const status = document.getElementById("status");
+    status.style.color = "green";
+    status.innerText = "✅ Evaluation wurde erfolgreich gespeichert.";
+
 }
 
 function updateProcessHint() {
@@ -491,18 +495,25 @@ function updateProcessHint() {
     } else {
         hint.innerHTML = `
             <strong>Hinweis:</strong>
-            <p>Sie können die Evaluation jetzt speichern oder einen QR-Code erstellen.</p>
+            <p>Sie können die Evaluation jetzt speichern und danach einen QR-Code erstellen.</p>
         `;
     }
  
 }
 
 document.getElementById("evalTitle").addEventListener("input", () => {
+    hasUnsavedChanges = true;
     updateProcessHint();
 });
 
 render();
 updateProcessHint();
+window.addEventListener("beforeunload", function (e) {
+    if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = "";
+    }
+});
 </script>
 
 </body>
