@@ -163,6 +163,13 @@
         #qrContainer {
             margin-top: 20px;
         }
+        .process-hint {
+            background: #f0f7ec;
+            border-left: 4px solid #6fb35f;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -186,7 +193,15 @@
 
 <div class="content-wrapper">
     <h1 class="main-title">Evaluation Details</h1>
-
+    <div id="processHint" class="process-hint">
+        <strong>So erstellen Sie eine Evaluation:</strong>
+        <ol>
+            <li>Geben Sie einen Titel ein</li>
+            <li>Fügen Sie mindestens eine Frage hinzu</li>
+            <li>Klicken Sie auf <em>Speichern</em></li>
+            <li>Optional: QR-Code zur Veröffentlichung erstellen</li>
+        </ol>
+    </div>
     <label>Evaluation Titel</label><br>
     <input type="text" id="evalTitle" placeholder="z.B. Midterm Feedback">
 
@@ -291,6 +306,7 @@ function render() {
         li.innerHTML = html;
         list.appendChild(li);
     });
+    updateProcessHint();
 }
 
 // Funktionen für Fragen
@@ -382,7 +398,39 @@ function saveEvaluation() {
     localStorage.removeItem("evaluationSource");
 }
 
+function updateProcessHint() {
+    const hint = document.getElementById("processHint");
+    const title = document.getElementById("evalTitle").value.trim();
+
+    if (!title) {
+        hint.innerHTML = `
+            <strong>Hinweis:</strong>
+            <p>Bitte geben Sie zuerst einen Titel für die Evaluation ein.</p>
+        `;
+        hint.style.display = "block";
+        return;
+    }
+
+    if (evaluation.questions.length === 0) {
+        hint.innerHTML = `
+            <strong>Hinweis:</strong>
+            <p>Bitte fügen Sie mindestens eine Frage hinzu.</p>
+        `;
+    } else {
+        hint.innerHTML = `
+            <strong>Hinweis:</strong>
+            <p>Sie können die Evaluation jetzt speichern oder einen QR-Code erstellen.</p>
+        `;
+    }
+ 
+}
+
+document.getElementById("evalTitle").addEventListener("input", () => {
+    updateProcessHint();
+});
+
 render();
+updateProcessHint();
 </script>
 
 </body>
