@@ -10,16 +10,14 @@
 <nav class="navbar">
     <div class="nav-left">
         <span class="group-logo">ATMEB</span>
-        
         <div class="nav-links">
             <span class="burger-logo">☰</span>
-            <a href="#" class="nav-link">Menü</a>
+            <a href="#" class="nav-link active">Menü</a>
             <a href="uebersicht.html" class="nav-link">Kurse</a>
             <a href="evaluationen.html" class="nav-link">Evaluationen</a>
             <a href="#" class="nav-link">Einstellungen</a>
         </div>
     </div>
-
     <div class="nav-right">
         <span id="user-display"></span>
         <div class="profile-circle"></div>
@@ -35,46 +33,59 @@
     </div>
 
     <div class="courses-grid">
-        <div class="course-box" onclick="localStorage.setItem('selectedCourse', 'Mensch Computer Interaktion'); window.location.href='evaluationen.html'">
+        <!-- Statische Kurse -->
+        <div class="course-box">
             <h3>Mensch Computer Interaktion</h3>
             <small>WS 2025</small>
+            <button class="open-btn" onclick="openCourse('Mensch Computer Interaktion')">Kurs öffnen →</button>
         </div>
 
-        <div class="course-box" onclick="localStorage.setItem('selectedCourse', 'Programmieren I'); window.location.href='evaluationen.html'">
+        <div class="course-box">
             <h3>Programmieren I</h3>
             <small>WS 2025</small>
+            <button class="open-btn" onclick="openCourse('Programmieren I')">Kurs öffnen →</button>
         </div>
     </div>
 </div>
 
 <script>
-
+    
     const storedUser = localStorage.getItem("username");
     document.getElementById("user-display").innerText = storedUser ? storedUser : "Gast";
 
     
     const coursesGrid = document.querySelector(".courses-grid");
+
+    
     const ekstraKurs = JSON.parse(localStorage.getItem("ekstraKurs")) || [];
 
     ekstraKurs.forEach(kurs => {
-       
         const newBox = document.createElement("div");
-        newBox.className = "course-box"; 
-      
-       
-        newBox.innerHTML = `<h3>${kurs.name}</h3><small>${kurs.sem}</small>`;
-        
-        
-        newBox.onclick = function () {
-    localStorage.setItem("selectedCourse", kurs.name);
-    window.location.href = "evaluationen.html"; 
-};
+        newBox.className = "course-box";
 
-
+        newBox.innerHTML = `
+            <h3>${kurs.name}</h3>
+            <small>${kurs.sem}</small>
+            <button class="open-btn">Kurs öffnen →</button>
+        `;
 
         
+        newBox.querySelector(".open-btn").onclick = function(e) {
+            e.stopPropagation(); 
+            openCourse(kurs.name);
+        };
+
         coursesGrid.appendChild(newBox);
     });
+
+    
+    function openCourse(courseName) {
+        const confirmOpen = confirm("Möchten Sie diesen Kurs wirklich öffnen?");
+        if (confirmOpen) {
+            localStorage.setItem("selectedCourse", courseName);
+            window.location.href = "evaluationen.html";
+        }
+    }
 </script>
 
 </body>
