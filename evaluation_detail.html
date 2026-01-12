@@ -143,6 +143,38 @@
             transform: translateY(-2px);
         }
 
+        .tooltip {
+            position: relative;
+        }
+
+        .tooltip-text {
+            position: absolute;
+            top: calc(100% + 8px); 
+            left: 50%;
+            transform: translateX(-50%) translateY(-5px);
+            margin-top: -2px;
+            margin-left: 25px ;
+            background-color: #333;
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            white-space: nowrap;
+
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            z-index: 1000;
+
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        .tooltip:hover .tooltip-text {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
         .primary-action {
             display: flex;
             justify-content: flex-end;
@@ -198,6 +230,10 @@
 </nav>
 
 <div class="content-wrapper">
+    <button class="secondary-btn tooltip" onclick="goBack()">
+            ⬅ Zurück
+                <span class="tooltip-text">Weiterleitung zur Liste der Evaluatinen dieses Kurs</span>
+    </button>
     <h1 class="main-title">Evaluation Details</h1>
 
     <div id="processHint" class="process-hint">
@@ -223,9 +259,18 @@
     <!-- Buttons -->
     <div class="action-group">
         <div class="secondary-actions">
-            <button class="secondary-btn" onclick="addQuestion()">➕ Neue Frage</button>
-            <button class="secondary-btn" onclick="generateQR()">🔗 QR Code / Link</button>
-            <button class="secondary-btn" onclick="goBack()">⬅ Zurück</button>
+            <button class="secondary-btn tooltip" onclick="addQuestion()">➕ Neue Frage
+                <span class="tooltip-text">Sie können eine neue Frage hinzufügen</span>
+            </button>
+            <button class="secondary-btn tooltip" onclick="generateQR()">🔗 QR Code / Link
+                <span class="tooltip-text">QR Code dieser Evaluation wird für Studenten generiert</span>
+            </button>
+            <button id="undoBtn" class="secondary-btn" 
+            style="display:none;" 
+            onclick="undoDelete()">
+
+            ↩ Rückgängig
+            </button>
         </div>
         <div class="primary-action">
             <button class="save-btn" onclick="saveEvaluation()">💾 Speichern</button>
@@ -239,6 +284,9 @@
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 <script>
 let evaluation = null;
+
+let lastDeletedQuestion = null;
+let lastDeletedIndex = null;
 const evaluationId = Number(localStorage.getItem("currentEvaluationId"));
 let evaluations = JSON.parse(localStorage.getItem("evaluations")) || [];
 
@@ -339,11 +387,44 @@ function editQuestion(index) {
 
 function deleteQuestion(index) {
     const questionText = evaluation.questions[index].text;
-    const confirmDelete = confirm(`Möchten Sie die Frage "${questionText}" wirklich löschen?`);
-    if (confirmDelete) {
-        evaluation.questions.splice(index, 1);
+    const confirmDelete = confirm(
+        `Möchten Sie die Frage "${questionText}" wirklich löschen?`
+    );
+
+    if (!confirmDelete) return;
+
+    lastDeletedQuestion = evaluation.questions[index];
+    lastDeletedIndex = index;
+
+    evaluation.questions.splice(index, 1);
+    persist();
+
+    showUndoButton();
+}
+
+function undoDelete() {
+    if (lastDeletedQuestion !== null) {
+        evaluation.questions.splice(
+            lastDeletedIndex,
+            0,
+            lastDeletedQuestion
+        );
+
+        lastDeletedQuestion = null;
+        lastDeletedIndex = null;
+
         persist();
+        hideUndoButton();
     }
+}
+
+
+function showUndoButton() {
+    document.getElementById("undoBtn").style.display = "inline-block";
+}
+
+function hideUndoButton() {
+    document.getElementById("undoBtn").style.display = "none";
 }
 
 function persist() {
