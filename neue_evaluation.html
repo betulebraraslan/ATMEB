@@ -374,7 +374,8 @@ function deleteQuestion(index) {
 
     evaluation.questions.splice(index, 1);
     hasUnsavedChanges = true;
-    persist();
+   
+    save();
 
     showUndoButton();
 }
@@ -390,7 +391,7 @@ function undoDelete() {
         lastDeletedQuestion = null;
         lastDeletedIndex = null;
 
-        persist();
+        save();
         hideUndoButton();
     }
 }
@@ -464,7 +465,7 @@ function saveEvaluation() {
     }
 
     localStorage.setItem("evaluations", JSON.stringify(evaluations));
-    hasUnsavedChanges = false; // ⭐ đánh dấu đã lưu
+    hasUnsavedChanges = false; 
     //localStorage.removeItem("currentEvaluationId");
     localStorage.removeItem("evaluationSource");
     
