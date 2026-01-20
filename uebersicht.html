@@ -11,11 +11,7 @@
     <div class="nav-left">
         <span class="group-logo">ATMEB</span>
         <div class="nav-links">
-            <span class="burger-logo">☰</span>
-            <a href="#" class="nav-link active">Menü</a>
-            <a href="uebersicht.html" class="nav-link">Kurse</a>
-            <a href="evaluationen.html" class="nav-link">Evaluationen</a>
-            <a href="#" class="nav-link">Einstellungen</a>
+            
         </div>
     </div>
     <div class="nav-right">
@@ -37,13 +33,13 @@
         <div class="course-box">
             <h3>Mensch Computer Interaktion</h3>
             <small>WS 2025</small>
-            <button class="open-btn" onclick="openCourse('Mensch Computer Interaktion')">Kurs öffnen →</button>
+            <button class="open-btn" onclick="openCourse('Mensch Computer Interaktion')">Kurs öffnen </button>
         </div>
 
         <div class="course-box">
             <h3>Programmieren I</h3>
             <small>WS 2025</small>
-            <button class="open-btn" onclick="openCourse('Programmieren I')">Kurs öffnen →</button>
+            <button class="open-btn" onclick="openCourse('Programmieren I')">Kurs öffnen </button>
         </div>
     </div>
 </div>
@@ -80,11 +76,8 @@
 
     
     function openCourse(courseName) {
-        const confirmOpen = confirm("Möchten Sie diesen Kurs wirklich öffnen?");
-        if (confirmOpen) {
-            localStorage.setItem("selectedCourse", courseName);
-            window.location.href = "evaluationen.html";
-        }
+        localStorage.setItem("selectedCourse", courseName);
+        window.location.href = "evaluationen.html";
     }
 </script>
 

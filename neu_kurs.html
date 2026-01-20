@@ -86,7 +86,8 @@
 </head>
 <body>
 
-    <div class="top-bar">
+     <div class="top-bar">
+
         <button onclick="window.location.href='uebersicht.html'">
             ← Zur Übersicht
         </button>
@@ -102,9 +103,19 @@
             </div>
 
             <div class="form-row">
-                <label for="semester">Semester</label>
-                <input id="semester" type="text" placeholder=" z. B. WS 2025">
-            </div>
+            <label for="semesterType">Semester</label>
+            <select id="semesterType" style="flex: 0.3; padding: 10px; margin-right: 10px;">
+                <option value="WS">WS</option>
+                <option value="SS">SS</option>
+            </select>
+            <select id="semesterYear" style="flex: 0.7; padding: 10px;">
+                <option value="2022">2022</option>
+                <option value="2023">2023</option>
+                <option value="2024">2024</option>
+                <option value="2025" selected>2025</option>
+                <option value="2026">2026</option>
+            </select>
+             </div>
 
             <div class="actions">
                 <button id="submitBtn" type="submit" disabled>
@@ -128,20 +139,25 @@
         kursnameInput.addEventListener("input", checkInputs);
         semesterInput.addEventListener("input", checkInputs);
     
+  
         kursForm.addEventListener("submit", function (e) {
-            e.preventDefault(); // verhindert Seitenreload
-    
-            const kursname = kursnameInput.value.trim();
-            const semester = semesterInput.value.trim();
-    
+            e.preventDefault(); 
+
+            const kursname = document.getElementById("kursname").value.trim();
+            
+            
+            const sType = document.getElementById("semesterType").value;
+            const sYear = document.getElementById("semesterYear").value;
+            const semesterFull = sType + " " + sYear; 
+
             let Kurse = JSON.parse(localStorage.getItem("ekstraKurs")) || [];
-            Kurse.push({ name: kursname, sem: semester });
+            
+            
+            Kurse.push({ name: kursname, sem: semesterFull }); 
+            
             localStorage.setItem("ekstraKurs", JSON.stringify(Kurse));
-    
-            //  Bestätigung anzeigen
+
             alert("Kurs wurde erfolgreich hinzugefügt.");
-    
-            // Zur Übersicht wechseln
             window.location.href = "uebersicht.html";
         });
     </script>
