@@ -126,41 +126,36 @@
     </div>
 
     <script>
-        const kursnameInput = document.getElementById("kursname");
-        const semesterInput = document.getElementById("semester");
-        const submitBtn = document.getElementById("submitBtn");
-        const kursForm = document.getElementById("kursForm");
-    
-        function checkInputs() {
-            submitBtn.disabled =
-                kursnameInput.value.trim() === "" || semesterInput.value.trim() === "";
-        }
-    
-        kursnameInput.addEventListener("input", checkInputs);
-        semesterInput.addEventListener("input", checkInputs);
-    
-  
-        kursForm.addEventListener("submit", function (e) {
-            e.preventDefault(); 
+    const kursnameInput = document.getElementById("kursname");
+   
+    const submitBtn = document.getElementById("submitBtn");
+    const kursForm = document.getElementById("kursForm");
 
-            const kursname = document.getElementById("kursname").value.trim();
-            
-            
-            const sType = document.getElementById("semesterType").value;
-            const sYear = document.getElementById("semesterYear").value;
-            const semesterFull = sType + " " + sYear; 
+    
+    function checkInputs() {
+        submitBtn.disabled = kursnameInput.value.trim() === "";
+    }
 
-            let Kurse = JSON.parse(localStorage.getItem("ekstraKurs")) || [];
-            
-            
-            Kurse.push({ name: kursname, sem: semesterFull }); 
-            
-            localStorage.setItem("ekstraKurs", JSON.stringify(Kurse));
+    kursnameInput.addEventListener("input", checkInputs);
 
-            alert("Kurs wurde erfolgreich hinzugefügt.");
-            window.location.href = "uebersicht.html";
-        });
-    </script>
+    kursForm.addEventListener("submit", function (e) {
+        e.preventDefault(); 
+
+        const kursname = kursnameInput.value.trim();
+        const sType = document.getElementById("semesterType").value;
+        const sYear = document.getElementById("semesterYear").value;
+        const semesterFull = sType + " " + sYear; 
+
+        let Kurse = JSON.parse(localStorage.getItem("ekstraKurs")) || [];
+        
+        Kurse.push({ name: kursname, sem: semesterFull }); 
+        
+        localStorage.setItem("ekstraKurs", JSON.stringify(Kurse));
+
+        alert("Kurs wurde erfolgreich hinzugefügt.");
+        window.location.href = "uebersicht.html";
+    });
+</script>
 
 </body>
 </html>
