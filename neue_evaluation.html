@@ -314,6 +314,33 @@ function render() {
             });
             html += "</ul>";
         }
+        else if (q.type === "scale") {
+            html += `
+                <div style="display: flex; align-items: center; gap: 10px; margin: 10px 0; max-width: 250px;">
+                    <span>😠</span>
+                    <div style="flex-grow: 1; height: 8px; background: linear-gradient(to right, #ff4d4d, #ffad33, #4CAF50); border-radius: 4px;"></div>
+                    <span>😊</span>
+                </div>
+            `;
+        } else if (q.type === "text") {
+            html += `
+                <div style="
+                    margin-top: 8px; 
+                    margin-bottom: 10px; 
+                    width: 100%; 
+                    max-width: 400px; 
+                    height: 35px; 
+                    background-color: white; 
+                    border: 1px solid #ccc; 
+                    border-radius: 4px;
+                    display: flex;
+                    align-items: center;
+                    padding-left: 10px;
+                    color: #aaa;
+                    font-size: 13px;
+                ">Antwort schreiben...</div>
+            `;
+        }
 
         html += `
             <button onclick="editQuestion(${i})">✏️</button>
@@ -330,9 +357,15 @@ function addQuestion() {
     const text = prompt("Frage eingeben:", "Wie ist das Vorlesungstempo?");
     if (!text) return;
 
-    const type = prompt("Fragetyp wählen:\ntext = Freitext\nchoice = Mehrfachauswahl", "choice");
-
-    if (type === "choice") {
+        const type = prompt("Fragetyp wählen:\ntext = Freitext\nchoice = Mehrfachauswahl\nscale = Zufriedenheitsskala (1-5)", "scale");
+    if (type === "scale") {
+        evaluation.questions.push({
+            text: text,
+            type: "scale",
+            minLabel: "Sehr unzufrieden",
+            maxLabel: "Sehr zufrieden"
+        });
+    } else  if (type === "choice") {
         const optionsInput = prompt("Antwortmöglichkeiten (durch Komma getrennt):", "zu schnell, angemessen, zu langsam");
         if (!optionsInput) return;
 
