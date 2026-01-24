@@ -327,19 +327,55 @@ function render() {
     list.innerHTML = "";
     evaluation.questions.forEach((q, i) => {
         const li = document.createElement("li");
-        let html = `<strong>${q.text}</strong> (${q.type})`;
+        
+       
+        let html = `<strong>${q.text}</strong> <span style="color:gray; font-size:12px;">(${q.type})</span>`;
 
-        if (q.type === "choice") {
-            html += "<ul>";
+       
+        if (q.type === "choice" && q.options) {
+            html += "<ul style='margin-top: 5px; margin-bottom: 5px; color: #555;'>";
             q.options.forEach(opt => {
                 html += `<li>${opt}</li>`;
             });
             html += "</ul>";
+        } 
+        
+     
+        else if (q.type === "scale") {
+            html += `
+                <div style="display: flex; align-items: center; gap: 10px; margin: 10px 0; max-width: 250px;">
+                    <span>😠</span>
+                    <div style="flex-grow: 1; height: 8px; background: linear-gradient(to right, #ff4d4d, #ffad33, #4CAF50); border-radius: 4px;"></div>
+                    <span>😊</span>
+                </div>
+            `;
+        }
+
+        else if (q.type === "text") {
+            html += `
+                <div style="
+                    margin-top: 8px; 
+                    margin-bottom: 10px; 
+                    width: 100%; 
+                    max-width: 400px; 
+                    height: 35px; 
+                    background-color: white; 
+                    border: 1px solid #ccc; 
+                    border-radius: 4px;
+                    display: flex;
+                    align-items: center;
+                    padding-left: 10px;
+                    color: #aaa;
+                    font-size: 13px;
+                ">Antwort schreiben...</div>
+            `;
         }
 
         html += `
-            <button onclick="editQuestion(${i})">✏️</button>
-            <button onclick="deleteQuestion(${i})">🗑️</button>
+            <div style="margin-top: 5px;">
+                <button onclick="editQuestion(${i})" style="border:none; background:none; cursor:pointer;">✏️</button>
+                <button onclick="deleteQuestion(${i})" style="border:none; background:none; cursor:pointer;">🗑️</button>
+            </div>
         `;
 
         li.innerHTML = html;
@@ -350,12 +386,20 @@ function render() {
 }
 
 function addQuestion() {
-    const text = prompt("Frage eingeben:", "Wie ist das Vorlesungstempo?");
+    const text = prompt("Frage eingeben:", "Wie bewerten Sie das Vorlesungstempo?");
     if (!text) return;
 
-    const type = prompt("Fragetyp wählen:\ntext = Freitext\nchoice = Mehrfachauswahl", "choice");
 
-    if (type === "choice") {
+    const type = prompt("Fragetyp wählen:\ntext = Freitext\nchoice = Mehrfachauswahl\nscale = Zufriedenheitsskala (1-5)", "scale");
+
+    if (type === "scale") {
+        evaluation.questions.push({
+            text: text,
+            type: "scale",
+            minLabel: "Sehr unzufrieden",
+            maxLabel: "Sehr zufrieden"
+        });
+    } else if (type === "choice") {
         const optionsInput = prompt("Antwortmöglichkeiten (durch Komma getrennt):", "zu schnell, angemessen, zu langsam");
         if (!optionsInput) return;
 
@@ -364,11 +408,14 @@ function addQuestion() {
             type: "choice",
             options: optionsInput.split(",").map(o => o.trim())
         });
-    } else {
+    } else if (type === "text") {
         evaluation.questions.push({ text: text, type: "text" });
+    } else {
+        alert("Ungültiger Typ!");
+        return;
     }
+
     hasUnsavedChanges = true;
- 
     render();
 }
 
